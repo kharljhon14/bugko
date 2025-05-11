@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - DATABASE_URL=postgres://root:postgres@db:5432/bugko
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    command: sh -c "pnpm install && pnpm dev"
+
+  db:
+    image: postgres:latest
+    restart: alawys
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bugko
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  volumes:
+    pgdata:

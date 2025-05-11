@@ -1,0 +1,27 @@
+{
+  "name": "bugko-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint --ext .ts",
+    "typescheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "Kharl Enriquez",
+  "license": "ISC",
+  "packageManager": "pnpm@10.10.0",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "fastify": "^5.3.2",
+    "pg": "^8.15.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.17",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
+  }
+}
