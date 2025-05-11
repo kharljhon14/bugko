@@ -3,7 +3,9 @@ dist/
 .env
 frontend/node_modules/
 backend/node_modules/
+
 frontend/.env
 backend/.env
 
 backend/secret-key
+backend/migrations
