@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   app:
     build: .
@@ -17,7 +15,7 @@ services:
 
   db:
     image: postgres:latest
-    restart: alawys
+    restart: always
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: postgres
@@ -27,5 +25,5 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  volumes:
-    pgdata:
+volumes:
+  pgdata:
