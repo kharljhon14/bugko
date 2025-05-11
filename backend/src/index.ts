@@ -1,16 +1,19 @@
 import Fastify from 'fastify';
 import dotenv from 'dotenv';
+import authPlugin from './plugins/auth';
+
+import healthRoutes from './routes/health';
+dotenv.config();
 
 const fastify = Fastify({
   logger: true
 });
 
-dotenv.config();
+// Plugins
+fastify.register(authPlugin);
 
 // Routes
-fastify.get('/health', async function healthCheckHandler(_request, _reply) {
-  return { status: 'ok' };
-});
+fastify.register(healthRoutes);
 
 async function start() {
   try {

@@ -9,15 +9,22 @@
     "start": "node dist/index.js",
     "lint": "eslint --ext .ts",
     "typescheck": "tsc --noEmit",
-    "migrate": "node-pg-migrate"
+    "migrate": "node-pg-migrate",
+    "migrate-down": "$DATABASE_URL node-pg-migrate down",
+    "migrate-up": "$DATABASE_URL node-pg-migrate up"
   },
   "keywords": [],
   "author": "Kharl Enriquez",
   "license": "ISC",
   "packageManager": "pnpm@10.10.0",
   "dependencies": {
+    "@fastify/jwt": "^9.1.0",
+    "@fastify/oauth2": "^8.1.2",
+    "@fastify/passport": "^3.0.2",
+    "@fastify/secure-session": "^8.2.0",
     "dotenv": "^16.5.0",
     "fastify": "^5.3.2",
+    "fastify-plugin": "^5.0.1",
     "pg": "^8.15.6"
   },
   "devDependencies": {
