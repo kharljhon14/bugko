@@ -9,3 +9,4 @@ backend/.env
 
 backend/secret-key
 backend/migrations
+backend/docker-compose.yml
