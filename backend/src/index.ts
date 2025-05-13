@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import authPlugin from './plugins/auth';
 
 import healthRoutes from './routes/health';
+import authRoutes from './routes/auth';
+
 dotenv.config();
 
 const fastify = Fastify({
@@ -14,6 +16,7 @@ fastify.register(authPlugin);
 
 // Routes
 fastify.register(healthRoutes);
+fastify.register(authRoutes);
 
 async function start() {
   try {
