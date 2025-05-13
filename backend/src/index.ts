@@ -1,6 +1,8 @@
 import Fastify from 'fastify';
 import dotenv from 'dotenv';
+
 import authPlugin from './plugins/auth';
+import databasePlugin from './plugins/data';
 
 import healthRoutes from './routes/health';
 import authRoutes from './routes/auth';
@@ -12,6 +14,7 @@ const fastify = Fastify({
 });
 
 // Plugins
+fastify.register(databasePlugin);
 fastify.register(authPlugin);
 
 // Routes

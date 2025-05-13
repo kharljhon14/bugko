@@ -28,7 +28,26 @@ export default async function authRoutes(fastify: FastifyInstance) {
 
   fastify.get('/test-auth', async (request, reply) => {
     if (request.isAuthenticated()) {
-      return { message: 'Authenticated', data: request.user };
+      const user = request.user as User;
+      const client = await fastify.pg.connect();
+      try {
+        const { rows } = await client.query('SELECT * FROM users WHERE email=$1', [user.email]);
+
+        if (rows.length === 0) {
+          const result = await client.query(
+            'INSERT INTO users(name, email) VALUES ($1, $2) RETURNING id',
+            [`${user.given_name} ${user.family_name}`, user.email]
+          );
+          const newUserId = result.rows[0].id;
+          await client.query('INSERT INTO sso_accounts(user_id, provider) VALUES ($1, $2)', [
+            newUserId,
+            'google'
+          ]);
+        }
+      } finally {
+        client.release();
+      }
+      reply.send({ data: user });
     } else {
       reply.code(401).send({ message: 'Unauthorized' });
     }
