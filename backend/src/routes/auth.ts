@@ -27,42 +27,38 @@ export default async function authRoutes(fastify: FastifyInstance) {
     reply.redirect('/me');
   });
 
-  fastify.get('/me', async (request, reply) => {
-    if (request.isAuthenticated()) {
-      const user = request.user as User;
-      const client = await fastify.pg.connect();
-      try {
-        const { rows } = await client.query('SELECT * FROM users WHERE email=$1', [user.email]);
-        let dbUser = rows[0];
+  fastify.get('/me', { preHandler: [isAuthenticated] }, async (request, reply) => {
+    const user = request.user as User;
+    const client = await fastify.pg.connect();
+    try {
+      const { rows } = await client.query('SELECT * FROM users WHERE email=$1', [user.email]);
+      let dbUser = rows[0];
 
-        // Insert user information if first sign in
-        if (!dbUser) {
-          const result = await client.query(
-            'INSERT INTO users(name, email) VALUES ($1, $2) RETURNING id, name, email',
-            [`${user.given_name} ${user.family_name}`, user.email]
-          );
-          const newUserId = result.rows[0].id;
+      // Insert user information if first sign in
+      if (!dbUser) {
+        const result = await client.query(
+          'INSERT INTO users(name, email) VALUES ($1, $2) RETURNING id, name, email',
+          [`${user.given_name} ${user.family_name}`, user.email]
+        );
+        const newUserId = result.rows[0].id;
 
-          await client.query(
-            'INSERT INTO sso_accounts(user_id, provider, provider_id) VALUES ($1, $2, $3)',
-            [newUserId, 'google', user.id]
-          );
+        await client.query(
+          'INSERT INTO sso_accounts(user_id, provider, provider_id) VALUES ($1, $2, $3)',
+          [newUserId, 'google', user.id]
+        );
 
-          dbUser = result.rows[0];
-        }
-
-        return reply.send({ data: dbUser });
-      } catch (err) {
-        return reply.code(500).send({ error: err });
-      } finally {
-        client.release();
+        dbUser = result.rows[0];
       }
-    } else {
-      reply.code(401).send({ message: 'Unauthorized' });
+
+      return reply.send({ data: dbUser });
+    } catch (err) {
+      return reply.code(500).send({ error: err });
+    } finally {
+      client.release();
     }
   });
 
-  fastify.get('/logout', async (request, reply) => {
+  fastify.get('/logout', { preHandler: [isAuthenticated] }, async (request, reply) => {
     await request.logout();
 
     reply.send({ message: 'logged out' });
