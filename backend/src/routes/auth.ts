@@ -3,8 +3,9 @@ import fetch from 'node-fetch';
 
 // types.d.ts
 import '@fastify/oauth2';
-import { User } from '../types/auth';
+import { CreateSSO, GoogleUser } from '../types/auth';
 import { isAuthenticated } from '../middlewares/auth';
+import { createSSO, createUser, getUser } from '../data/auth';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -20,7 +21,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       headers: {
         Authorization: `Bearer ${token.token.access_token}`
       }
-    }).then((res) => res.json())) as User;
+    }).then((res) => res.json())) as GoogleUser;
 
     await request.login({ provider: 'google', ...userInfo });
 
@@ -28,29 +29,27 @@ export default async function authRoutes(fastify: FastifyInstance) {
   });
 
   fastify.get('/me', { preHandler: [isAuthenticated] }, async (request, reply) => {
-    const user = request.user as User;
+    const user = request.user as GoogleUser;
+    console.log(user);
     const client = await fastify.pg.connect();
     try {
-      const { rows } = await client.query('SELECT * FROM users WHERE email=$1', [user.email]);
-      let dbUser = rows[0];
+      const foundUser = await getUser(client, user.email);
 
-      // Insert user information if first sign in
-      if (!dbUser) {
-        const result = await client.query(
-          'INSERT INTO users(name, email) VALUES ($1, $2) RETURNING id, name, email',
-          [`${user.given_name} ${user.family_name}`, user.email]
-        );
-        const newUserId = result.rows[0].id;
+      if (!foundUser) {
+        const newUser = await createUser(client, user);
 
-        await client.query(
-          'INSERT INTO sso_accounts(user_id, provider, provider_id) VALUES ($1, $2, $3)',
-          [newUserId, 'google', user.id]
-        );
+        const ssoValues: CreateSSO = {
+          user_id: newUser.id,
+          provider: 'google',
+          provider_id: user.id
+        };
 
-        dbUser = result.rows[0];
+        await createSSO(client, ssoValues);
+
+        return reply.send({ data: newUser });
       }
 
-      return reply.send({ data: dbUser });
+      return reply.send({ data: foundUser });
     } catch (err) {
       return reply.code(500).send({ error: err });
     } finally {
