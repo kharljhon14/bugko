@@ -1,7 +1,8 @@
-import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { GoogleUser } from '../types/auth';
 import { getUser, createUser, createSSO } from '../data/auth.data';
 import { CreateSSOSchemaType } from '../schemas/auth.schema';
+import fetch from 'node-fetch';
 
 declare module 'fastify' {
   interface FastifyInstance {
