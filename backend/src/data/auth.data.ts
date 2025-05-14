@@ -1,5 +1,6 @@
 import { PoolClient } from 'pg';
-import { CreateSSO, DBSSO, DBUser, GoogleUser } from '../types/auth';
+import { DBSSO, DBUser, GoogleUser } from '../types/auth';
+import { CreateSSOSchemaType } from '../schemas/auth.schema';
 
 // Get User
 export async function getUser(client: PoolClient, email: string): Promise<DBUser | null> {
@@ -26,7 +27,10 @@ export async function createUser(client: PoolClient, user: GoogleUser): Promise<
 }
 
 // Create SSO
-export async function createSSO(client: PoolClient, ssoValues: CreateSSO): Promise<DBSSO> {
+export async function createSSO(
+  client: PoolClient,
+  ssoValues: CreateSSOSchemaType
+): Promise<DBSSO> {
   try {
     const results = await client.query<DBSSO>(
       'INSERT INTO sso_accounts(user_id, provider, provider_id) VALUES ($1, $2, $3) RETURNING *',

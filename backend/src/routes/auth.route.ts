@@ -5,8 +5,8 @@ import fetch from 'node-fetch';
 import '@fastify/oauth2';
 import { GoogleUser } from '../types/auth';
 import { isAuthenticated } from '../middlewares/auth';
-import { createSSO, createUser, getUser } from '../data/auth';
-import { CreateSSOSchemaType } from '../schemas/auth';
+import { createSSO, createUser, getUser } from '../data/auth.data';
+import { CreateSSOSchemaType } from '../schemas/auth.schema';
 
 declare module 'fastify' {
   interface FastifyInstance {

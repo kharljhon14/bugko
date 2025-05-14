@@ -1,5 +1,5 @@
 import { PoolClient } from 'pg';
-import { CreateProjectSchemaType } from '../schemas/projects';
+import { CreateProjectSchemaType } from '../schemas/projects.schema';
 import { DBProject } from '../types/projects';
 
 // Create Project

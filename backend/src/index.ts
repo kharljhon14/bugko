@@ -1,11 +1,11 @@
 import Fastify from 'fastify';
 import dotenv from 'dotenv';
 
-import authPlugin from './plugins/auth';
-import databasePlugin from './plugins/data';
+import authPlugin from './plugins/auth.plugin';
+import databasePlugin from './plugins/data.plugin';
 
-import healthRoutes from './routes/health';
-import authRoutes from './routes/auth';
+import healthRoutes from './routes/health.route';
+import authRoutes from './routes/auth.route';
 
 dotenv.config();
 
