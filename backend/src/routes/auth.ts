@@ -3,9 +3,10 @@ import fetch from 'node-fetch';
 
 // types.d.ts
 import '@fastify/oauth2';
-import { CreateSSO, GoogleUser } from '../types/auth';
+import { GoogleUser } from '../types/auth';
 import { isAuthenticated } from '../middlewares/auth';
 import { createSSO, createUser, getUser } from '../data/auth';
+import { CreateSSOSchemaType } from '../schemas/auth';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -38,7 +39,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       if (!foundUser) {
         const newUser = await createUser(client, user);
 
-        const ssoValues: CreateSSO = {
+        const ssoValues: CreateSSOSchemaType = {
           user_id: newUser.id,
           provider: 'google',
           provider_id: user.id

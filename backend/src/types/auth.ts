@@ -22,9 +22,3 @@ export interface DBSSO {
   provider: string;
   provider_id: string;
 }
-
-export interface CreateSSO {
-  user_id: number;
-  provider: 'google' | 'github';
-  provider_id: string;
-}
