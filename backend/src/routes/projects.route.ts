@@ -1,8 +1,9 @@
 import { FastifyInstance } from 'fastify';
 import { isAuthenticated } from '../middlewares/auth';
-import { createProjectHandler } from '../controllers/projects.controller';
+import { createProjectHandler, getProjectByIdHandler } from '../controllers/projects.controller';
 import { validateSchema } from '../middlewares/validateSchema';
 import { createProjectSchema } from '../schemas/projects.schema';
+import { number } from 'zod';
 
 export default function projectsRoutes(fastify: FastifyInstance) {
   fastify.post(
@@ -11,7 +12,21 @@ export default function projectsRoutes(fastify: FastifyInstance) {
     createProjectHandler(fastify)
   );
 
-  fastify.get('/:id', { preHandler: [isAuthenticated] }, async function () {});
+  fastify.get(
+    '/:id',
+    {
+      preHandler: [],
+      schema: {
+        params: {
+          type: 'object',
+          properties: {
+            id: { type: 'number' }
+          }
+        }
+      }
+    },
+    getProjectByIdHandler(fastify)
+  );
   fastify.get(
     '/',
     {
