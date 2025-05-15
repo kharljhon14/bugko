@@ -1,8 +1,8 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { GoogleUser } from '../types/auth';
-import { getUser, createUser, createSSO } from '../data/auth.data';
-import { CreateSSOSchemaType } from '../schemas/auth.schema';
+
 import fetch from 'node-fetch';
+import { handleGoogleUser } from '../services/auth.service';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -31,23 +31,8 @@ export function getUserInformationHandler(fastify: FastifyInstance) {
 
     const client = await fastify.pg.connect();
     try {
-      const foundUser = await getUser(client, user.email);
-
-      if (!foundUser) {
-        const newUser = await createUser(client, user);
-
-        const ssoValues: CreateSSOSchemaType = {
-          user_id: newUser.id,
-          provider: 'google',
-          provider_id: user.id
-        };
-
-        await createSSO(client, ssoValues);
-
-        return reply.send({ data: newUser });
-      }
-
-      return reply.send({ data: foundUser });
+      const finalUser = await handleGoogleUser(client, user);
+      return reply.send({ data: finalUser });
     } catch (error) {
       return reply.code(500).send({ error: error });
     } finally {
