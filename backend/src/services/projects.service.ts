@@ -1,8 +1,8 @@
 import { PoolClient } from 'pg';
-import { CreateProjectSchemaType } from '../schemas/projects.schema';
+import { ProjectSchemaType } from '../schemas/projects.schema';
 import { createProject, getProjectById } from '../data/projects.data';
 
-export async function handleCreateNewProject(client: PoolClient, data: CreateProjectSchemaType) {
+export async function handleCreateNewProject(client: PoolClient, data: ProjectSchemaType) {
   const newProject = await createProject(client, data);
 
   return newProject;

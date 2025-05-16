@@ -1,11 +1,11 @@
 import { PoolClient } from 'pg';
-import { CreateProjectSchemaType } from '../schemas/projects.schema';
+import { ProjectSchemaType } from '../schemas/projects.schema';
 import { DBProject } from '../types/projects';
 
 // Create Project
 export async function createProject(
   client: PoolClient,
-  createProjectSchema: CreateProjectSchemaType
+  createProjectSchema: ProjectSchemaType
 ): Promise<DBProject> {
   const results = await client.query<DBProject>(
     'INSERT INTO projects (owner, name) VALUES ($1, $2) RETURNING *',
@@ -34,6 +34,20 @@ export async function getProjectsByOwner(
   ]);
 
   return results.rows;
+}
+
+// Update Project
+export async function updateProject(
+  client: PoolClient,
+  id: number,
+  projectSchema: ProjectSchemaType
+) {
+  const results = await client.query<DBProject>(
+    `UPDATE projects SET name = $1, updated_at = now() WHERE id = $3 AND owner = $4 RETURNING *`,
+    [projectSchema.name, id, projectSchema.owner]
+  );
+
+  return results.rows[0];
 }
 
 // Delete Project

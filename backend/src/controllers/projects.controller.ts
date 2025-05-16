@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { CreateProjectSchemaType } from '../schemas/projects.schema';
+import { ProjectSchemaType } from '../schemas/projects.schema';
 import { handleCreateNewProject, handleGetProjectById } from '../services/projects.service';
 import { DatabaseError } from 'pg';
 
@@ -7,7 +7,7 @@ export function createProjectHandler(fastify: FastifyInstance) {
   return async function (request: FastifyRequest, reply: FastifyReply) {
     const client = await fastify.pg.connect();
     try {
-      const projectValues = request.body as CreateProjectSchemaType;
+      const projectValues = request.body as ProjectSchemaType;
       const newProject = await handleCreateNewProject(client, projectValues);
 
       return reply.code(200).send({ data: newProject });
@@ -33,10 +33,10 @@ export function createProjectHandler(fastify: FastifyInstance) {
 }
 
 export function getProjectByIdHandler(fastify: FastifyInstance) {
-  return async function (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+  return async function (request: FastifyRequest, reply: FastifyReply) {
     const client = await fastify.pg.connect();
     try {
-      const { id } = request.params;
+      const { id } = request.params as { id: number };
 
       const project = await handleGetProjectById(client, Number(id));
 
