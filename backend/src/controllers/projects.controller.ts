@@ -3,10 +3,11 @@ import { ProjectSchemaType } from '../schemas/projects.schema';
 import {
   handleCreateNewProject,
   handleGetProjectById,
-  handleGetProjectsByOwner
+  handleGetProjectsByOwner,
+  handleUpdateProject
 } from '../services/projects.service';
 import { DatabaseError } from 'pg';
-import { getUserByID } from '../data/auth.data';
+import { NotFoundError } from '../utils/error';
 
 export function createProjectHandler(fastify: FastifyInstance) {
   return async function (request: FastifyRequest, reply: FastifyReply) {
@@ -45,17 +46,19 @@ export function getProjectByIdHandler(fastify: FastifyInstance) {
 
       const project = await handleGetProjectById(client, Number(id));
 
-      if (!project) {
-        return reply.code(404).send({ error: `project with id ${id} does not exist` });
-      }
-
       return reply.send({ data: project });
     } catch (error) {
+      if (error instanceof NotFoundError) {
+        return reply.code(404).send({ error: error.message });
+      }
+
       if (error instanceof DatabaseError) {
         return reply.code(500).send({ error: error.detail });
       }
 
-      return reply.code(500).send({ error: error });
+      if (error instanceof Error) {
+        return reply.code(500).send({ error: error.message });
+      }
     } finally {
       client.release();
     }
@@ -68,19 +71,49 @@ export function getProjectsByOwnerHandler(fastify: FastifyInstance) {
     try {
       const { owner_id } = request.query as { owner_id: number };
 
-      const owner = await getUserByID(client, owner_id);
-
-      if (!owner) {
-        return reply.code(404).send({ error: `owner with id ${owner_id} does not exist` });
-      }
-      const projects = await handleGetProjectsByOwner(client, Number(owner.id));
+      const projects = await handleGetProjectsByOwner(client, Number(owner_id));
 
       return reply.send({ data: projects });
     } catch (error) {
+      if (error instanceof NotFoundError) {
+        return reply.code(404).send({ error: error.message });
+      }
+
       if (error instanceof DatabaseError) {
         return reply.code(500).send({ error: error.detail });
       }
-      return reply.code(500).send({ error: error });
+
+      if (error instanceof Error) {
+        return reply.code(500).send({ error: error });
+      }
+    } finally {
+      client.release();
+    }
+  };
+}
+
+export function updateProjectHandler(fastify: FastifyInstance) {
+  return async function (request: FastifyRequest, reply: FastifyReply) {
+    const client = await fastify.pg.connect();
+    try {
+      const { id } = request.params as { id: number };
+      const projectValues = request.body as ProjectSchemaType;
+
+      const updatedProject = await handleUpdateProject(client, Number(id), projectValues);
+
+      return reply.send({ data: updatedProject });
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        return reply.code(404).send({ error: error.message });
+      }
+
+      if (error instanceof DatabaseError) {
+        return reply.code(500).send({ error: error.detail });
+      }
+
+      if (error instanceof Error) {
+        return reply.code(500).send({ error: error.message });
+      }
     } finally {
       client.release();
     }

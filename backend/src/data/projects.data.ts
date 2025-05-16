@@ -43,7 +43,7 @@ export async function updateProject(
   projectSchema: ProjectSchemaType
 ) {
   const results = await client.query<DBProject>(
-    `UPDATE projects SET name = $1, updated_at = now() WHERE id = $3 AND owner = $4 RETURNING *`,
+    `UPDATE projects SET name = $1, updated_at = now() WHERE id = $2 AND owner = $3 RETURNING *`,
     [projectSchema.name, id, projectSchema.owner]
   );
 
