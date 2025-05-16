@@ -11,27 +11,34 @@ declare module 'fastify' {
 
 export function googleAuthHandler(fastify: FastifyInstance) {
   return async function (request: FastifyRequest, reply: FastifyReply) {
-    const token = await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
+    const client = await fastify.pg.connect();
 
-    const userInfo = (await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-      headers: {
-        Authorization: `Bearer ${token.token.access_token}`
-      }
-    }).then((res) => res.json())) as GoogleUser;
+    try {
+      const token = await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request);
 
-    await request.login({ provider: 'google', ...userInfo });
+      const userInfo = (await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+        headers: {
+          Authorization: `Bearer ${token.token.access_token}`
+        }
+      }).then((res) => res.json())) as GoogleUser;
 
-    reply.redirect('/me');
+      const user = await handleGoogleUser(client, userInfo);
+      await request.login({ userID: user.id, ...userInfo });
+
+      reply.redirect('/me');
+    } catch (error) {
+      return reply.code(500).send({ error: error });
+    } finally {
+      client.release();
+    }
   };
 }
 export function getUserInformationHandler(fastify: FastifyInstance) {
   return async function getUserInformationHandler(request: FastifyRequest, reply: FastifyReply) {
     const user = request.user as GoogleUser;
-
     const client = await fastify.pg.connect();
     try {
-      const finalUser = await handleGoogleUser(client, user);
-      return reply.send({ data: finalUser });
+      return reply.send({ data: user });
     } catch (error) {
       return reply.code(500).send({ error: error });
     } finally {

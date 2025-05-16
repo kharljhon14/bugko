@@ -9,7 +9,6 @@ import {
 } from '../services/projects.service';
 import { DatabaseError } from 'pg';
 import { NotFoundError } from '../utils/error';
-import { number } from 'zod';
 
 export function createProjectHandler(fastify: FastifyInstance) {
   return async function (request: FastifyRequest, reply: FastifyReply) {
