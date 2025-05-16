@@ -10,8 +10,12 @@ import {
 import { getUserByID } from '../data/auth.data';
 import { NotFoundError } from '../utils/error';
 
-export async function handleCreateNewProject(client: PoolClient, data: ProjectSchemaType) {
-  const newProject = await createProject(client, data);
+export async function handleCreateNewProject(
+  client: PoolClient,
+  data: ProjectSchemaType,
+  userID: number
+) {
+  const newProject = await createProject(client, data, userID);
 
   return newProject;
 }
@@ -38,14 +42,19 @@ export async function handleGetProjectsByOwner(client: PoolClient, ownerId: numb
   return projects;
 }
 
-export async function handleUpdateProject(client: PoolClient, id: number, data: ProjectSchemaType) {
-  const foundUser = await getUserByID(client, data.owner);
+export async function handleUpdateProject(
+  client: PoolClient,
+  id: number,
+  data: ProjectSchemaType,
+  userID: number
+) {
+  const foundUser = await getUserByID(client, userID);
 
   if (!foundUser) {
-    throw new NotFoundError(`owner with ID: ${data.owner} not found`);
+    throw new NotFoundError(`owner with ID: ${userID} not found`);
   }
 
-  const project = await updateProject(client, id, data);
+  const project = await updateProject(client, id, data, foundUser.id);
 
   if (!project) {
     throw new NotFoundError(`project with ID: ${id} not found`);
@@ -54,15 +63,8 @@ export async function handleUpdateProject(client: PoolClient, id: number, data: 
   return project;
 }
 
-//TODO: Prevent deletetion for not owner
-export async function handleDeleteProject(client: PoolClient, id: number) {
-  // const foundUser = await getUserByID(client, ownerId);
-
-  // if (!foundUser) {
-  //   throw new NotFoundError(`owner with ID: ${ownerId} not found`);
-  // }
-
-  const rowCount = await deleteProject(client, id);
+export async function handleDeleteProject(client: PoolClient, id: number, userID: number) {
+  const rowCount = await deleteProject(client, id, userID);
 
   if (rowCount === 0) {
     throw new NotFoundError(`project with ID: ${id} not found`);

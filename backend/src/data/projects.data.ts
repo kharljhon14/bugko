@@ -6,11 +6,12 @@ import { NotFoundError } from '../utils/error';
 // Create Project
 export async function createProject(
   client: PoolClient,
-  createProjectSchema: ProjectSchemaType
+  createProjectSchema: ProjectSchemaType,
+  userID: number
 ): Promise<DBProject> {
   const results = await client.query<DBProject>(
     'INSERT INTO projects (owner, name) VALUES ($1, $2) RETURNING *',
-    [createProjectSchema.owner, createProjectSchema.name]
+    [userID, createProjectSchema.name]
   );
   return results.rows[0];
 }
@@ -41,19 +42,23 @@ export async function getProjectsByOwner(
 export async function updateProject(
   client: PoolClient,
   id: number,
-  projectSchema: ProjectSchemaType
+  projectSchema: ProjectSchemaType,
+  userID: number
 ) {
   const results = await client.query<DBProject>(
     `UPDATE projects SET name = $1, updated_at = now() WHERE id = $2 AND owner = $3 RETURNING *`,
-    [projectSchema.name, id, projectSchema.owner]
+    [projectSchema.name, id, userID]
   );
 
   return results.rows[0];
 }
 
 // Delete Project
-export async function deleteProject(client: PoolClient, id: number) {
-  const results = await client.query<DBProject>('DELETE FROM projects WHERE id = $1', [id]);
+export async function deleteProject(client: PoolClient, id: number, userID: number) {
+  const results = await client.query<DBProject>(
+    'DELETE FROM projects WHERE id = $1 AND owner = $2',
+    [id, userID]
+  );
 
   return results.rowCount;
 }

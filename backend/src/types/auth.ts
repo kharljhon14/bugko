@@ -6,7 +6,6 @@ export interface GoogleUser {
   given_name: string;
   family_name: string;
   picture: string;
-  locale: string;
 }
 
 export interface DBUser {
@@ -21,4 +20,8 @@ export interface DBSSO {
   user_id: number;
   provider: string;
   provider_id: string;
+}
+
+export interface UpdatedPassportUser extends GoogleUser {
+  user_id: string;
 }

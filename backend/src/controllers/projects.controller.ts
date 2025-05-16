@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest, PassportUser } from 'fastify';
 import { ProjectSchemaType } from '../schemas/projects.schema';
 import {
   handleCreateNewProject,
@@ -9,13 +9,16 @@ import {
 } from '../services/projects.service';
 import { DatabaseError } from 'pg';
 import { NotFoundError } from '../utils/error';
+import { UpdatedPassportUser } from '../types/auth';
 
 export function createProjectHandler(fastify: FastifyInstance) {
   return async function (request: FastifyRequest, reply: FastifyReply) {
     const client = await fastify.pg.connect();
     try {
+      const user = request.user as UpdatedPassportUser;
+
       const projectValues = request.body as ProjectSchemaType;
-      const newProject = await handleCreateNewProject(client, projectValues);
+      const newProject = await handleCreateNewProject(client, projectValues, Number(user.user_id));
 
       return reply.code(200).send({ data: newProject });
     } catch (error) {
@@ -99,8 +102,14 @@ export function updateProjectHandler(fastify: FastifyInstance) {
     try {
       const { id } = request.params as { id: number };
       const projectValues = request.body as ProjectSchemaType;
+      const user = request.user as UpdatedPassportUser;
 
-      const updatedProject = await handleUpdateProject(client, Number(id), projectValues);
+      const updatedProject = await handleUpdateProject(
+        client,
+        Number(id),
+        projectValues,
+        Number(user.user_id)
+      );
 
       return reply.send({ data: updatedProject });
     } catch (error) {
@@ -126,8 +135,9 @@ export function deleteProjectHandler(fastify: FastifyInstance) {
     const client = await fastify.pg.connect();
     try {
       const { id } = request.params as { id: number };
+      const user = request.user as UpdatedPassportUser;
 
-      await handleDeleteProject(client, Number(id));
+      await handleDeleteProject(client, Number(id), Number(user.user_id));
 
       return reply.send({ message: `project with ID ${id} is deleted` });
     } catch (error) {

@@ -23,7 +23,7 @@ export function googleAuthHandler(fastify: FastifyInstance) {
       }).then((res) => res.json())) as GoogleUser;
 
       const user = await handleGoogleUser(client, userInfo);
-      await request.login({ userID: user.id, ...userInfo });
+      await request.login({ user_id: user.id, ...userInfo });
 
       reply.redirect('/me');
     } catch (error) {
