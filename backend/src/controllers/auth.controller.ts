@@ -1,7 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { GoogleUser } from '../types/auth';
 
-import fetch from 'node-fetch';
 import { handleGoogleUser } from '../services/auth.service';
 
 declare module 'fastify' {

@@ -3,7 +3,14 @@ import { DBSSO, DBUser, GoogleUser } from '../types/auth';
 import { CreateSSOSchemaType } from '../schemas/auth.schema';
 
 // Get User
-export async function getUser(client: PoolClient, email: string): Promise<DBUser | null> {
+export async function getUserByID(client: PoolClient, id: number): Promise<DBUser | null> {
+  const { rows } = await client.query<DBUser>('SELECT * FROM users WHERE id=$1', [id]);
+
+  return rows[0] ?? null;
+}
+
+// Get User By Email
+export async function getUserByEmail(client: PoolClient, email: string): Promise<DBUser | null> {
   const { rows } = await client.query<DBUser>('SELECT * FROM users WHERE email=$1', [email]);
 
   return rows[0] ?? null;

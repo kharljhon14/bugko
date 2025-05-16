@@ -1,6 +1,10 @@
 import { FastifyInstance } from 'fastify';
 import { isAuthenticated } from '../middlewares/auth';
-import { createProjectHandler, getProjectByIdHandler } from '../controllers/projects.controller';
+import {
+  createProjectHandler,
+  getProjectByIdHandler,
+  getProjectsByOwnerHandler
+} from '../controllers/projects.controller';
 import { validateSchema } from '../middlewares/validateSchema';
 import { projectSchema } from '../schemas/projects.schema';
 
@@ -10,7 +14,7 @@ export default function projectsRoutes(fastify: FastifyInstance) {
   fastify.get(
     '/:id',
     {
-      preHandler: [isAuthenticated],
+      preHandler: [],
       schema: {
         params: {
           type: 'object',
@@ -25,19 +29,19 @@ export default function projectsRoutes(fastify: FastifyInstance) {
   fastify.get(
     '/',
     {
-      preHandler: [isAuthenticated],
+      preHandler: [],
       schema: {
         querystring: {
           type: 'object',
           properties: {
-            name: { type: 'string' }
+            owner_id: { type: 'number' }
           },
-          required: ['name']
+          required: ['owner_id']
         }
       }
     },
-    async function () {}
+    getProjectsByOwnerHandler(fastify)
   );
 
-  fastify.delete('/:id', { preHandler: [isAuthenticated] }, async function () {});
+  fastify.delete('/:id', { preHandler: [] }, async function () {});
 }

@@ -1,7 +1,12 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { ProjectSchemaType } from '../schemas/projects.schema';
-import { handleCreateNewProject, handleGetProjectById } from '../services/projects.service';
+import {
+  handleCreateNewProject,
+  handleGetProjectById,
+  handleGetProjectsByOwner
+} from '../services/projects.service';
 import { DatabaseError } from 'pg';
+import { getUserByID } from '../data/auth.data';
 
 export function createProjectHandler(fastify: FastifyInstance) {
   return async function (request: FastifyRequest, reply: FastifyReply) {
@@ -50,6 +55,31 @@ export function getProjectByIdHandler(fastify: FastifyInstance) {
         return reply.code(500).send({ error: error.detail });
       }
 
+      return reply.code(500).send({ error: error });
+    } finally {
+      client.release();
+    }
+  };
+}
+
+export function getProjectsByOwnerHandler(fastify: FastifyInstance) {
+  return async function (request: FastifyRequest, reply: FastifyReply) {
+    const client = await fastify.pg.connect();
+    try {
+      const { owner_id } = request.query as { owner_id: number };
+
+      const owner = await getUserByID(client, owner_id);
+
+      if (!owner) {
+        return reply.code(404).send({ error: `owner with id ${owner_id} does not exist` });
+      }
+      const projects = await handleGetProjectsByOwner(client, Number(owner.id));
+
+      return reply.send({ data: projects });
+    } catch (error) {
+      if (error instanceof DatabaseError) {
+        return reply.code(500).send({ error: error.detail });
+      }
       return reply.code(500).send({ error: error });
     } finally {
       client.release();
