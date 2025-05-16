@@ -2,12 +2,14 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { ProjectSchemaType } from '../schemas/projects.schema';
 import {
   handleCreateNewProject,
+  handleDeleteProject,
   handleGetProjectById,
   handleGetProjectsByOwner,
   handleUpdateProject
 } from '../services/projects.service';
 import { DatabaseError } from 'pg';
 import { NotFoundError } from '../utils/error';
+import { number } from 'zod';
 
 export function createProjectHandler(fastify: FastifyInstance) {
   return async function (request: FastifyRequest, reply: FastifyReply) {
@@ -102,6 +104,33 @@ export function updateProjectHandler(fastify: FastifyInstance) {
       const updatedProject = await handleUpdateProject(client, Number(id), projectValues);
 
       return reply.send({ data: updatedProject });
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        return reply.code(404).send({ error: error.message });
+      }
+
+      if (error instanceof DatabaseError) {
+        return reply.code(500).send({ error: error.detail });
+      }
+
+      if (error instanceof Error) {
+        return reply.code(500).send({ error: error.message });
+      }
+    } finally {
+      client.release();
+    }
+  };
+}
+
+export function deleteProjectHandler(fastify: FastifyInstance) {
+  return async function (request: FastifyRequest, reply: FastifyReply) {
+    const client = await fastify.pg.connect();
+    try {
+      const { id } = request.params as { id: number };
+
+      await handleDeleteProject(client, Number(id));
+
+      return reply.send({ message: `project with ID ${id} is deleted` });
     } catch (error) {
       if (error instanceof NotFoundError) {
         return reply.code(404).send({ error: error.message });

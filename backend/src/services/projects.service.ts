@@ -2,6 +2,7 @@ import { PoolClient } from 'pg';
 import { ProjectSchemaType } from '../schemas/projects.schema';
 import {
   createProject,
+  deleteProject,
   getProjectById,
   getProjectsByOwner,
   updateProject
@@ -51,4 +52,19 @@ export async function handleUpdateProject(client: PoolClient, id: number, data: 
   }
 
   return project;
+}
+
+//TODO: Prevent deletetion for not owner
+export async function handleDeleteProject(client: PoolClient, id: number) {
+  // const foundUser = await getUserByID(client, ownerId);
+
+  // if (!foundUser) {
+  //   throw new NotFoundError(`owner with ID: ${ownerId} not found`);
+  // }
+
+  const rowCount = await deleteProject(client, id);
+
+  if (rowCount === 0) {
+    throw new NotFoundError(`project with ID: ${id} not found`);
+  }
 }

@@ -1,6 +1,7 @@
 import { PoolClient } from 'pg';
 import { ProjectSchemaType } from '../schemas/projects.schema';
 import { DBProject } from '../types/projects';
+import { NotFoundError } from '../utils/error';
 
 // Create Project
 export async function createProject(
@@ -54,7 +55,5 @@ export async function updateProject(
 export async function deleteProject(client: PoolClient, id: number) {
   const results = await client.query<DBProject>('DELETE FROM projects WHERE id = $1', [id]);
 
-  if (results.rowCount === 0) {
-    throw new Error(`No project found with id: ${id}`);
-  }
+  return results.rowCount;
 }
