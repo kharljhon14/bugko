@@ -2,6 +2,7 @@ import { PoolClient } from 'pg';
 import { addProjectMember, getProjectMember } from '../data/project_members';
 import { NotFoundError, UnauthorizedError } from '../utils/error';
 import { getProjectById } from '../data/projects.data';
+import { getUserByID } from '../data/auth.data';
 
 export async function handleGetProjectMember(
   client: PoolClient,
@@ -31,9 +32,13 @@ export async function handleAddProjectMember(
     throw new NotFoundError(`project with id ${projectID} not found`);
   }
 
-  console.log(project.owner, ownerID);
   if (Number(project.owner) !== ownerID) {
     throw new UnauthorizedError(`user with id ${ownerID} is unauthroized to update project`);
+  }
+
+  const foundUser = await getUserByID(client, userID);
+  if (!foundUser) {
+    throw new NotFoundError(`user with id ${userID} not found`);
   }
 
   const projectMember = await addProjectMember(client, projectID, userID);
