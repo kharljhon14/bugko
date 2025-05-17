@@ -1,5 +1,5 @@
 import { PoolClient } from 'pg';
-import { addProjectMember, getProjectMember } from '../data/project_members';
+import { addProjectMember, getProjectMember, removeProjectMember } from '../data/project_members';
 import { NotFoundError, UnauthorizedError } from '../utils/error';
 import { getProjectById } from '../data/projects.data';
 import { getUserByID } from '../data/auth.data';
@@ -33,7 +33,7 @@ export async function handleAddProjectMember(
   }
 
   if (Number(project.owner) !== ownerID) {
-    throw new UnauthorizedError(`user with id ${ownerID} is unauthroized to update project`);
+    throw new UnauthorizedError(`user with id ${ownerID} is unauthorized to update project`);
   }
 
   const foundUser = await getUserByID(client, userID);
@@ -44,4 +44,32 @@ export async function handleAddProjectMember(
   const projectMember = await addProjectMember(client, projectID, userID);
 
   return projectMember;
+}
+
+export async function handleRemoveProjectMember(
+  client: PoolClient,
+  ownerID: number,
+  projectID: number,
+  userID: number
+) {
+  const project = await getProjectById(client, projectID);
+
+  if (!project) {
+    throw new NotFoundError(`project with id ${projectID} not found`);
+  }
+
+  if (Number(project.owner) !== ownerID) {
+    throw new UnauthorizedError(`user with id ${ownerID} is unauthorized to update project`);
+  }
+
+  const foundUser = await getUserByID(client, userID);
+  if (!foundUser) {
+    throw new NotFoundError(`user with id ${userID} not found`);
+  }
+
+  const rowCount = await removeProjectMember(client, projectID, userID);
+
+  if (rowCount === 0) {
+    throw new NotFoundError(`project with id ${projectID} and user with ${userID} not found`);
+  }
 }
