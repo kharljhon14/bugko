@@ -9,6 +9,7 @@ import {
 } from '../data/projects.data';
 import { getUserByID } from '../data/auth.data';
 import { NotFoundError } from '../utils/error';
+import { addProjectMember } from '../data/project_members';
 
 export async function handleCreateNewProject(
   client: PoolClient,
@@ -16,6 +17,8 @@ export async function handleCreateNewProject(
   userID: number
 ) {
   const newProject = await createProject(client, data, userID);
+
+  await addProjectMember(client, newProject.id, userID);
 
   return newProject;
 }

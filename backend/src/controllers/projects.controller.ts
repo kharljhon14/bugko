@@ -31,7 +31,7 @@ export function createProjectHandler(fastify: FastifyInstance) {
             return reply.code(400).send({ error: 'name already exsist' });
 
           default:
-            return reply.code(500).send({ error: error.detail });
+            return reply.code(500).send({ error: error });
         }
       }
 

@@ -1,7 +1,6 @@
 import { PoolClient } from 'pg';
 import { ProjectSchemaType } from '../schemas/projects.schema';
 import { DBProject } from '../types/projects';
-import { NotFoundError } from '../utils/error';
 
 // Create Project
 export async function createProject(

@@ -7,6 +7,7 @@ import databasePlugin from './plugins/data.plugin';
 import healthRoutes from './routes/health.route';
 import authRoutes from './routes/auth.route';
 import projectRoutes from './routes/projects.route';
+import projectMemberRoutes from './routes/project_memebers.route';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ fastify.register(authPlugin);
 fastify.register(healthRoutes);
 fastify.register(authRoutes);
 fastify.register(projectRoutes, { prefix: '/projects' });
+fastify.register(projectMemberRoutes, { prefix: '/project-members' });
 
 async function start() {
   try {
