@@ -1,10 +1,14 @@
 import { FastifyInstance } from 'fastify';
-import { getProjectMemberHandler } from '../controllers/project_members';
+import { addProjectMemberHandler, getProjectMemberHandler } from '../controllers/project_members';
+import { isAuthenticated } from '../middlewares/auth';
+import { validateSchema } from '../middlewares/validateSchema';
+import { addProjectMemberSchema } from '../schemas/project_member.schema';
 
 export default function projectMembersRoutes(fastify: FastifyInstance) {
   fastify.get(
     '/',
     {
+      preHandler: [isAuthenticated],
       schema: {
         querystring: {
           type: 'object',
@@ -17,5 +21,13 @@ export default function projectMembersRoutes(fastify: FastifyInstance) {
       }
     },
     getProjectMemberHandler(fastify)
+  );
+
+  fastify.post(
+    '/',
+    {
+      preHandler: [isAuthenticated, validateSchema(addProjectMemberSchema)]
+    },
+    addProjectMemberHandler(fastify)
   );
 }
