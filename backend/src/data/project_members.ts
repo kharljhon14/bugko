@@ -5,7 +5,7 @@ import { DBUser } from '../types/auth';
 
 export async function getProjectMember(client: PoolClient, projectID: number, userID: number) {
   const results = await client.query<DBProjectMember>(
-    'SELECT * FROM project_members WHERE project = $1 AND user = $2',
+    'SELECT * FROM project_members WHERE project_id = $1 AND user_id = $2',
     [projectID, userID]
   );
 
@@ -16,8 +16,8 @@ export async function getProjectMembers(client: PoolClient, projectID: number) {
   const results = await client.query<DBUser>(
     `
       SELECT u.* FROM project_members pm
-      INNER JOIN users u ON pm.user = u.id
-      WHERE pm.project = $1
+      INNER JOIN users u ON pm.user_id = u.id
+      WHERE pm.project_id = $1
     `,
     [projectID]
   );
@@ -31,7 +31,7 @@ export async function getMemberProjects(client: PoolClient, userID: number) {
       SELECT p.*
       FROM project_members pm
       INNER JOIN projects p ON pm.project = p.id
-      WHERE pm.user = $1
+      WHERE pm.user_id = $1
     `,
     [userID]
   );
@@ -41,7 +41,7 @@ export async function getMemberProjects(client: PoolClient, userID: number) {
 
 export async function addProjectMember(client: PoolClient, projectID: number, userID: number) {
   const results = await client.query(
-    'INSERT INTO project_members (project, "user") VALUES ($1, $2) RETURNING *',
+    'INSERT INTO project_members (project_id, user_id) VALUES ($1, $2) RETURNING *',
     [projectID, userID]
   );
 
@@ -50,7 +50,7 @@ export async function addProjectMember(client: PoolClient, projectID: number, us
 
 export async function removeProjectMember(client: PoolClient, projectID: number, userID: number) {
   const results = await client.query(
-    'DELETE FROM project_members WHERE project = $1 AND user = $2',
+    'DELETE FROM project_members WHERE project_id = $1 AND user_id = $2',
     [projectID, userID]
   );
 
