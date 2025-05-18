@@ -1,4 +1,6 @@
 import Fastify from 'fastify';
+import cors from '@fastify/cors';
+
 import dotenv from 'dotenv';
 
 import authPlugin from './plugins/auth.plugin';
@@ -13,6 +15,10 @@ dotenv.config();
 
 const fastify = Fastify({
   logger: true
+});
+
+fastify.register(cors, {
+  origin: 'http:localhost:5173'
 });
 
 // Plugins
