@@ -5,7 +5,11 @@ import { DBUser } from '../types/auth';
 
 export async function getProjectMember(client: PoolClient, projectID: number, userID: number) {
   const results = await client.query<DBProjectMember>(
-    'SELECT * FROM project_members WHERE project_id = $1 AND user_id = $2',
+    `
+      SELECT u.* FROM project_members pm 
+      INNER JOIN users u ON pm.user_id = u.id
+      WHERE pm.project_id = $1 AND pm.user_id = $2
+    `,
     [projectID, userID]
   );
 
@@ -21,6 +25,8 @@ export async function getProjectMembers(client: PoolClient, projectID: number) {
     `,
     [projectID]
   );
+
+  console.log(results.rowCount);
 
   return results.rows;
 }

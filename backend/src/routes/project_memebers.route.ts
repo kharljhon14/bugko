@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify';
 import {
   addProjectMemberHandler,
   getProjectMemberHandler,
+  getProjectMembersHandler,
   removeProjectMemberHandler
 } from '../controllers/project_members';
 import { isAuthenticated } from '../middlewares/auth';
@@ -25,6 +26,23 @@ export default function projectMembersRoutes(fastify: FastifyInstance) {
       }
     },
     getProjectMemberHandler(fastify)
+  );
+
+  fastify.get(
+    '/members',
+    {
+      preHandler: [isAuthenticated],
+      schema: {
+        querystring: {
+          type: 'object',
+          properties: {
+            project_id: { type: 'number' }
+          },
+          required: ['project_id']
+        }
+      }
+    },
+    getProjectMembersHandler(fastify)
   );
 
   fastify.post(

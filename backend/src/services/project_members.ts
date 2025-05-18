@@ -1,5 +1,10 @@
 import { PoolClient } from 'pg';
-import { addProjectMember, getProjectMember, removeProjectMember } from '../data/project_members';
+import {
+  addProjectMember,
+  getProjectMember,
+  getProjectMembers,
+  removeProjectMember
+} from '../data/project_members';
 import { NotFoundError, UnauthorizedError } from '../utils/error';
 import { getProjectById } from '../data/projects.data';
 import { getUserByID } from '../data/auth.data';
@@ -15,6 +20,16 @@ export async function handleGetProjectMember(
     throw new NotFoundError(
       `project member with project id ${projectID} and user with id ${userID} not found`
     );
+  }
+
+  return projectMember;
+}
+
+export async function handleGetProjectMembers(client: PoolClient, projectID: number) {
+  const projectMember = await getProjectMembers(client, projectID);
+
+  if (!projectMember) {
+    throw new NotFoundError(`project id ${projectID} not found`);
   }
 
   return projectMember;
