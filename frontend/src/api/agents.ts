@@ -1,3 +1,4 @@
+import type { GoogleUser } from '@/types/auth';
 import axios, { type AxiosResponse } from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:8080';
@@ -13,7 +14,7 @@ const requests = {
 };
 
 const auth = {
-  me: () => requests.get('/me'),
+  me: () => requests.get<GoogleUser>('/me'),
   logout: () => requests.get('/logout')
 };
 
