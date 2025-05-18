@@ -25,7 +25,7 @@ export function googleAuthHandler(fastify: FastifyInstance) {
       const user = await handleGoogleUser(client, userInfo);
       await request.logIn({ user_id: user.id, ...userInfo });
 
-      reply.redirect('/me');
+      reply.redirect('http://localhost:5173');
     } catch (error) {
       return reply.code(500).send({ error: error });
     } finally {
