@@ -68,7 +68,7 @@ interface Props {
 }
 export default function ProjectTable({ projects }: Props) {
   return (
-    <div className="p-8">
+    <div>
       <DataTable
         columns={columns}
         data={projects}

@@ -1,4 +1,5 @@
 import agent from '@/api/agents';
+import ProjectForm from '@/features/projects/project-form';
 import ProjectTable from '@/features/projects/project-table';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
@@ -20,8 +21,13 @@ function RouteComponent() {
   }
 
   return (
-    <div>
-      <div>{isLoading ? 'Loading...' : <ProjectTable projects={data?.data ?? []} />}</div>
+    <div className="p-8 flex flex-col">
+      <div className="ml-auto">
+        <ProjectForm />
+      </div>
+      <div className="mt-6">
+        {isLoading ? 'Loading...' : <ProjectTable projects={data?.data ?? []} />}
+      </div>
     </div>
   );
 }
