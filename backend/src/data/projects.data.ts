@@ -30,9 +30,15 @@ export async function getProjectsByOwner(
   client: PoolClient,
   ownerId: number
 ): Promise<DBProject[]> {
-  const results = await client.query<DBProject>('SELECT * FROM projects WHERE owner = $1', [
-    ownerId
-  ]);
+  const results = await client.query<DBProject>(
+    `
+      SELECT p.id, p.name, p.created_at, p.updated_at, u.name AS owner_name
+      FROM projects p
+      INNER JOIN users u ON p.owner = u.id
+      WHERE p.owner = $1
+    `,
+    [ownerId]
+  );
 
   return results.rows;
 }
