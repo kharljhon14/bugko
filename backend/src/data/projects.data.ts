@@ -32,10 +32,11 @@ export async function getProjectsByOwner(
 ): Promise<DBProject[]> {
   const results = await client.query<DBProject>(
     `
-      SELECT p.id, p.name, p.created_at, p.updated_at, u.name AS owner_name
+      SELECT p.id, p.name, p.created_at, p.updated_at, u.id AS owner_id ,u.name AS owner_name
       FROM projects p
       INNER JOIN users u ON p.owner = u.id
       WHERE p.owner = $1
+      ORDER BY p.updated_at DESC;
     `,
     [ownerId]
   );

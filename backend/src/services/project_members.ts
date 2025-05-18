@@ -47,7 +47,7 @@ export async function handleAddProjectMember(
     throw new NotFoundError(`project with id ${projectID} not found`);
   }
 
-  if (Number(project.owner) !== ownerID) {
+  if (Number(project.owner_id) !== ownerID) {
     throw new UnauthorizedError(`user with id ${ownerID} is unauthorized to update project`);
   }
 
@@ -73,7 +73,7 @@ export async function handleRemoveProjectMember(
     throw new NotFoundError(`project with id ${projectID} not found`);
   }
 
-  if (Number(project.owner) !== ownerID) {
+  if (Number(project.owner_id) !== ownerID) {
     throw new UnauthorizedError(`user with id ${ownerID} is unauthorized to update project`);
   }
 
