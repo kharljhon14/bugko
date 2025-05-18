@@ -1,7 +1,6 @@
-import agent from '@/api/agents';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { useQuery } from '@tanstack/react-query';
+
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/auth')({
@@ -9,14 +8,6 @@ export const Route = createFileRoute('/auth')({
 });
 
 function RouteComponent() {
-  const { refetch, error, isLoading, data } = useQuery({
-    queryKey: ['auth'],
-    queryFn: agent.auth.googleLogin,
-    enabled: false
-  });
-
-  console.log(data);
-
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <Card className="w-full max-w-sm shadow-xl rounded-2xl">
@@ -27,7 +18,7 @@ function RouteComponent() {
           <Button
             size="lg"
             className="w-full"
-            onClick={() => refetch()}
+            onClick={() => (window.location.href = 'http://localhost:8080/login/google')}
           >
             Continue with Google
           </Button>

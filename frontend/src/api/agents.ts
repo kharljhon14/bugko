@@ -1,6 +1,7 @@
 import axios, { type AxiosResponse } from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.withCredentials = true;
 
 const responseBody = <T>(res: AxiosResponse<T>) => res.data;
 
@@ -12,7 +13,7 @@ const requests = {
 };
 
 const auth = {
-  googleLogin: () => requests.get('/login/google'),
+  me: () => requests.get('/me'),
   logout: () => requests.get('/logout')
 };
 
