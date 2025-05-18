@@ -1,4 +1,5 @@
 import DataTable from '@/components/common/data-table';
+import { Button } from '@/components/ui/button';
 
 import type { Project } from '@/types/projects';
 import type { ColumnDef } from '@tanstack/react-table';
@@ -13,7 +14,7 @@ const columns: ColumnDef<Project>[] = [
     header: 'Name'
   },
   {
-    accessorKey: 'owner',
+    accessorKey: 'owner_name',
     header: 'Project Owner'
   },
   {
@@ -31,6 +32,7 @@ const columns: ColumnDef<Project>[] = [
       return formattedDate;
     }
   },
+
   {
     accessorKey: 'updated_at',
     header: 'Updated',
@@ -44,6 +46,19 @@ const columns: ColumnDef<Project>[] = [
       }).format(date);
 
       return formattedDate;
+    }
+  },
+  {
+    id: 'actions',
+    header: 'Actions',
+    cell: () => {
+      return (
+        <div className="flex gap-4">
+          <Button>View</Button>
+          <Button variant="outline">Update</Button>
+          <Button variant="destructive">Delete</Button>
+        </div>
+      );
     }
   }
 ];

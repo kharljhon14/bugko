@@ -21,7 +21,6 @@ function RouteComponent() {
 
   return (
     <div>
-      <h1>Hello {user.data.name}</h1>
       <div>{isLoading ? 'Loading...' : <ProjectTable projects={data?.data ?? []} />}</div>
     </div>
   );
