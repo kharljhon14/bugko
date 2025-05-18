@@ -1,4 +1,5 @@
 import type { GoogleUser } from '@/types/auth';
+import type { ProjectResponse } from '@/types/projects';
 import axios, { type AxiosResponse } from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:8080';
@@ -18,8 +19,14 @@ const auth = {
   logout: () => requests.get('/logout')
 };
 
+const projects = {
+  getAllProjectByOwner: (ownerID: string) =>
+    requests.get<ProjectResponse>(`/projects?owner_id=${ownerID}`)
+};
+
 const agent = {
-  auth
+  auth,
+  projects
 };
 
 export default agent;
