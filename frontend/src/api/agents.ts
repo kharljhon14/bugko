@@ -1,5 +1,6 @@
+import type { ProjectSchemaType } from '@/schemas/projects';
 import type { GoogleUser } from '@/types/auth';
-import type { ProjectResponse } from '@/types/projects';
+import type { GetAllProjectResponse } from '@/types/projects';
 import axios, { type AxiosResponse } from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:8080';
@@ -21,7 +22,9 @@ const auth = {
 
 const projects = {
   getAllProjectByOwner: (ownerID: string) =>
-    requests.get<ProjectResponse>(`/projects?owner_id=${ownerID}`)
+    requests.get<GetAllProjectResponse>(`/projects?owner_id=${ownerID}`),
+  createProject: (body: ProjectSchemaType) => requests.post('/projects', body),
+  updateProject: (id: string, body: ProjectSchemaType) => requests.patch(`projects/${id}`, body)
 };
 
 const agent = {

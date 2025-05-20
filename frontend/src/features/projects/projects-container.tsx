@@ -47,7 +47,10 @@ export default function ProjectsContainer({ projects }: Props) {
                   {selectedProject ? 'Update the project name.' : 'Give your new project a name.'}
                 </DialogDescription>
               </DialogHeader>
-              <ProjectForm selectedProject={selectedProject} />
+              <ProjectForm
+                selectedProject={selectedProject}
+                setOpenFormModal={setOpenFormModal}
+              />
             </DialogContent>
           </Dialog>
         </div>

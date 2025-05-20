@@ -7,6 +7,10 @@ export interface Project {
   updated_at: string;
 }
 
-export interface ProjectResponse {
+export interface GetAllProjectResponse {
   data: Project[];
+}
+
+export interface ProjectResponse {
+  data: Project;
 }
