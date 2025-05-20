@@ -24,7 +24,8 @@ const projects = {
   getAllProjectByOwner: (ownerID: string) =>
     requests.get<GetAllProjectResponse>(`/projects?owner_id=${ownerID}`),
   createProject: (body: ProjectSchemaType) => requests.post('/projects', body),
-  updateProject: (id: string, body: ProjectSchemaType) => requests.patch(`projects/${id}`, body)
+  updateProject: (id: string, body: ProjectSchemaType) => requests.patch(`/projects/${id}`, body),
+  deleteProject: (id: string) => requests.delete(`/projects/${id}`)
 };
 
 const agent = {

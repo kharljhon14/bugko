@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 
 import type { Project } from '@/types/projects';
 import type { ColumnDef } from '@tanstack/react-table';
+import ProjectDeleteButton from './project-delete-button';
 
 interface Props {
   projects: Project[];
@@ -73,7 +74,7 @@ export default function ProjectTable({ projects, setSelectedProject, setOpenForm
             >
               Update
             </Button>
-            <Button variant="destructive">Delete</Button>
+            <ProjectDeleteButton project={row.original} />
           </div>
         );
       }
