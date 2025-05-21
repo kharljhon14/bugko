@@ -1,6 +1,6 @@
 import { PoolClient } from 'pg';
 import { DBTicket } from '../types/tickets';
-import { CreateTicketSchemaType } from '../schemas/tickets.schema';
+import { CreateTicketSchemaType, UpdateTicketSchemaType } from '../schemas/tickets.schema';
 
 export async function getTicketByID(client: PoolClient, id: number) {
   const results = await client.query<DBTicket>(
@@ -42,6 +42,25 @@ export async function createTicket(client: PoolClient, ticket: CreateTicketSchem
         RETURNING  *;
     `,
     [ticket.project_id, ticket.owner_id, ticket.assignee_id, ticket.title, ticket.description]
+  );
+
+  return results.rows[0];
+}
+
+export async function updateTicket(client: PoolClient, ticket: UpdateTicketSchemaType) {
+  const results = await client.query(
+    `
+      UPDATE tickets 
+      SET 
+      title = $1,
+      description = $2,
+      assignee_id = $3,
+      status = $4,
+      udpated_at = now()
+      WHERE id = $5
+      RETURINING *;
+    `,
+    [ticket.title, ticket.description, ticket.assignee_id, ticket.status]
   );
 
   return results.rows[0];
