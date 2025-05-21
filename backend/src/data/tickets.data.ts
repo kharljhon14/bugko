@@ -47,7 +47,7 @@ export async function createTicket(client: PoolClient, ticket: CreateTicketSchem
   return results.rows[0];
 }
 
-export async function updateTicket(client: PoolClient, ticket: UpdateTicketSchemaType) {
+export async function updateTicket(client: PoolClient, id: number, ticket: UpdateTicketSchemaType) {
   const results = await client.query(
     `
       UPDATE tickets 
@@ -60,7 +60,18 @@ export async function updateTicket(client: PoolClient, ticket: UpdateTicketSchem
       WHERE id = $5
       RETURINING *;
     `,
-    [ticket.title, ticket.description, ticket.assignee_id, ticket.status]
+    [ticket.title, ticket.description, ticket.assignee_id, ticket.status, id]
+  );
+
+  return results.rows[0];
+}
+
+export async function deleteTicket(client: PoolClient, id: number) {
+  const results = await client.query(
+    `
+      DELETE FROM tickets WHERE id = $1
+    `,
+    [id]
   );
 
   return results.rows[0];
