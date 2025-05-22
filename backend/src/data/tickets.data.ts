@@ -74,5 +74,5 @@ export async function deleteTicket(client: PoolClient, id: number) {
     [id]
   );
 
-  return results.rows[0];
+  return results.rowCount;
 }
