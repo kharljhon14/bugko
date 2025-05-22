@@ -6,9 +6,9 @@ export async function getTicketByID(client: PoolClient, id: number) {
   const results = await client.query<DBTicket>(
     `
         SELECT t.*, u.name AS owner_name, a.name AS assignee_name 
+        FROM tickets t
         INNER JOIN users u ON t.owner_id = u.id
         INNER JOIN users a ON t.assignee_id = a.id
-        FROM tickets t
         WHERE t.id = $1
     `,
     [id]

@@ -10,6 +10,7 @@ import healthRoutes from './routes/health.route';
 import authRoutes from './routes/auth.route';
 import projectRoutes from './routes/projects.route';
 import projectMemberRoutes from './routes/project_memebers.route';
+import ticketsRoutes from './routes/tickets.route';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ fastify.register(healthRoutes);
 fastify.register(authRoutes);
 fastify.register(projectRoutes, { prefix: '/projects' });
 fastify.register(projectMemberRoutes, { prefix: '/project-members' });
+fastify.register(ticketsRoutes, { prefix: '/tickets' });
 
 async function start() {
   try {
