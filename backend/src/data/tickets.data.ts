@@ -48,19 +48,21 @@ export async function createTicket(client: PoolClient, ticket: CreateTicketSchem
 }
 
 export async function updateTicket(client: PoolClient, id: number, ticket: UpdateTicketSchemaType) {
+  const fields = Object.keys(ticket);
+  const values = Object.values(ticket);
+
+  const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(`, `);
+
   const results = await client.query(
     `
       UPDATE tickets 
       SET 
-      title = $1,
-      description = $2,
-      assignee_id = $3,
-      status = $4,
-      udpated_at = now()
-      WHERE id = $5
-      RETURINING *;
+      ${setClause},
+      updated_at = now()
+      WHERE id = $${fields.length + 1}
+      RETURNING *;
     `,
-    [ticket.title, ticket.description, ticket.assignee_id, ticket.status, id]
+    [...values, id]
   );
 
   return results.rows[0];

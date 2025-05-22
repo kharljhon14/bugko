@@ -1,8 +1,12 @@
 import { FastifyInstance } from 'fastify';
 import { isAuthenticated } from '../middlewares/auth';
-import { createTicketHandler, getTicketByIDHandler } from '../controllers/tickets.controller';
+import {
+  createTicketHandler,
+  getTicketByIDHandler,
+  updatedTicketHandler
+} from '../controllers/tickets.controller';
 
-import { createTicketSchema } from '../schemas/tickets.schema';
+import { createTicketSchema, updateTicketSchema } from '../schemas/tickets.schema';
 import { validateSchema } from '../middlewares/validateSchema';
 
 export default function ticketsRoutes(fastify: FastifyInstance) {
@@ -28,5 +32,21 @@ export default function ticketsRoutes(fastify: FastifyInstance) {
       }
     },
     getTicketByIDHandler(fastify)
+  );
+
+  fastify.patch(
+    '/:id',
+    {
+      preHandler: [isAuthenticated, validateSchema(updateTicketSchema)],
+      schema: {
+        params: {
+          type: 'object',
+          properties: {
+            id: { type: 'number' }
+          }
+        }
+      }
+    },
+    updatedTicketHandler(fastify)
   );
 }

@@ -60,12 +60,23 @@ export async function handleCreateTicket(client: PoolClient, ticket: CreateTicke
 export async function handleUpdateTicket(
   client: PoolClient,
   ticketID: number,
-  ticket: UpdateTicketSchemaType
+  ticket: UpdateTicketSchemaType,
+  userID: number
 ) {
   const foundTicket = await getTicketByID(client, ticketID);
 
   if (!foundTicket) {
     throw new NotFoundError(`ticket with id ${ticketID} not found`);
+  }
+
+  const projectMember = await getProjectMember(
+    client,
+    Number(foundTicket.project_id),
+    Number(userID)
+  );
+
+  if (!projectMember) {
+    throw new UnauthorizedError(`user with id ${userID} is not authorized to perform this action`);
   }
 
   const updatedTicket = await updateTicket(client, ticketID, ticket);
