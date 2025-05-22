@@ -6,9 +6,10 @@ import {
   getTicketByID,
   updateTicket
 } from '../data/tickets.data';
-import { NotFoundError } from '../utils/error';
+import { NotFoundError, UnauthorizedError } from '../utils/error';
 import { getProjectById } from '../data/projects.data';
 import { CreateTicketSchemaType, UpdateTicketSchemaType } from '../schemas/tickets.schema';
+import { getProjectMember } from '../data/project_members';
 
 export async function handleGetTicketByID(client: PoolClient, id: number) {
   const ticket = await getTicketByID(client, id);
@@ -33,6 +34,24 @@ export async function handleGetAllTicketByProject(client: PoolClient, id: number
 }
 
 export async function handleCreateTicket(client: PoolClient, ticket: CreateTicketSchemaType) {
+  const projectMember = await getProjectMember(
+    client,
+    Number(ticket.project_id),
+    Number(ticket.owner_id)
+  );
+
+  if (!projectMember) {
+    throw new UnauthorizedError(
+      `user with id ${ticket.owner_id} is not authorized to perform this action`
+    );
+  }
+
+  const project = await getProjectById(client, Number(ticket.project_id));
+
+  if (!project) {
+    throw new NotFoundError(`project with id ${ticket.project_id} not found`);
+  }
+
   const newticket = await createTicket(client, ticket);
 
   return newticket;
