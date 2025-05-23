@@ -3,6 +3,7 @@ import { DatabaseError } from 'pg';
 import { NotFoundError, UnauthorizedError } from '../utils/error';
 import {
   handleCreateTicket,
+  handleDeleteTicket,
   handleGetTicketByID,
   handleUpdateTicket
 } from '../services/tickets.services';
@@ -92,6 +93,33 @@ export function updatedTicketHandler(fastify: FastifyInstance) {
       }
       if (error instanceof UnauthorizedError) {
         return reply.code(401).send({ error: error.message });
+      }
+
+      if (error instanceof Error) {
+        return reply.code(500).send({ error: error.message });
+      }
+    } finally {
+      client.release();
+    }
+  };
+}
+
+export function deleteTicketHandler(fastify: FastifyInstance) {
+  return async function (request: FastifyRequest, reply: FastifyReply) {
+    const client = await fastify.pg.connect();
+    try {
+      const { id } = request.params as { id: number };
+
+      await handleDeleteTicket(client, id);
+
+      return reply.send({ message: `ticket with id ${id} is deleted` });
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        return reply.code(404).send({ error: error.message });
+      }
+
+      if (error instanceof DatabaseError) {
+        return reply.code(500).send({ error: error.detail });
       }
 
       if (error instanceof Error) {

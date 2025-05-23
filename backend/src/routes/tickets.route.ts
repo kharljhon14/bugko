@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify';
 import { isAuthenticated } from '../middlewares/auth';
 import {
   createTicketHandler,
+  deleteTicketHandler,
   getTicketByIDHandler,
   updatedTicketHandler
 } from '../controllers/tickets.controller';
@@ -48,5 +49,21 @@ export default function ticketsRoutes(fastify: FastifyInstance) {
       }
     },
     updatedTicketHandler(fastify)
+  );
+
+  fastify.delete(
+    '/:id',
+    {
+      preHandler: [isAuthenticated],
+      schema: {
+        params: {
+          type: 'object',
+          properties: {
+            id: { type: 'number' }
+          }
+        }
+      }
+    },
+    deleteTicketHandler(fastify)
   );
 }
