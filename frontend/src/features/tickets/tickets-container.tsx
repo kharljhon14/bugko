@@ -10,9 +10,18 @@ import {
 } from '@/components/ui/breadcrumb';
 import { useQuery } from '@tanstack/react-query';
 import agent from '@/api/agents';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog';
+import TicketForm from './ticket-form';
 
 interface Props {
   tickets: Ticket[];
@@ -24,6 +33,14 @@ export default function TicketsContainer({ tickets, projectId }: Props) {
     queryKey: ['project'],
     queryFn: () => agent.projects.getProjectByID(projectId)
   });
+
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | undefined>();
+  const [openFormModal, setOpenFormModal] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpenFormModal(true);
+    setSelectedTicket(undefined);
+  };
 
   return (
     <div>
@@ -58,7 +75,23 @@ export default function TicketsContainer({ tickets, projectId }: Props) {
         </div>
 
         <div>
-          <Button size="lg">Create Ticket</Button>
+          <Dialog
+            open={openFormModal}
+            onOpenChange={setOpenFormModal}
+          >
+            <DialogTrigger
+              onClick={handleOpenDialog}
+              className={buttonVariants({ variant: 'default', size: 'lg' })}
+            >
+              Create Project
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{selectedTicket ? 'Update Ticket' : 'Create Ticket'}</DialogTitle>
+              </DialogHeader>
+              <TicketForm />
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
       <TicketsTable tickets={tickets} />

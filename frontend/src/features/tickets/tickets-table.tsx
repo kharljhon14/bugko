@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import type { Ticket } from '@/types/tickets';
 import DataTable from '@/components/common/data-table';
 import { Badge } from '@/components/ui/badge';
+import { Flame } from 'lucide-react';
 
 interface Props {
   tickets: Ticket[];
@@ -35,6 +36,31 @@ export default function TicketsTable({ tickets }: Props) {
       header: 'Description',
       cell: ({ row }) => {
         return <p className="truncate max-w-xs">{row.original.description}</p>;
+      }
+    },
+    {
+      accessorKey: 'priority',
+      header: 'Priority',
+      cell: ({ row }) => {
+        switch (row.original.priority) {
+          case 'low':
+            return <Flame className=" text-red-600" />;
+          case 'medium':
+            return (
+              <div className="flex">
+                <Flame className=" text-red-600" />
+                <Flame className=" text-red-600" />
+              </div>
+            );
+          case 'high':
+            return (
+              <div className="flex">
+                <Flame className=" text-red-600" />
+                <Flame className=" text-red-600" />
+                <Flame className=" text-red-600" />
+              </div>
+            );
+        }
       }
     },
     {
