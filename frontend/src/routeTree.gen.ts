@@ -14,7 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AuthImport } from './routes/auth'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexImport } from './routes/_authenticated.index'
-import { Route as AuthenticatedMeImport } from './routes/_authenticated.me'
+import { Route as AuthenticatedProjectsProjectIdImport } from './routes/_authenticated.projects.$projectId'
 
 // Create/Update Routes
 
@@ -35,11 +35,12 @@ const AuthenticatedIndexRoute = AuthenticatedIndexImport.update({
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 
-const AuthenticatedMeRoute = AuthenticatedMeImport.update({
-  id: '/me',
-  path: '/me',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
+const AuthenticatedProjectsProjectIdRoute =
+  AuthenticatedProjectsProjectIdImport.update({
+    id: '/projects/$projectId',
+    path: '/projects/$projectId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -59,18 +60,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/_authenticated/me': {
-      id: '/_authenticated/me'
-      path: '/me'
-      fullPath: '/me'
-      preLoaderRoute: typeof AuthenticatedMeImport
-      parentRoute: typeof AuthenticatedImport
-    }
     '/_authenticated/': {
       id: '/_authenticated/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/projects/$projectId': {
+      id: '/_authenticated/projects/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/projects/$projectId'
+      preLoaderRoute: typeof AuthenticatedProjectsProjectIdImport
       parentRoute: typeof AuthenticatedImport
     }
   }
@@ -79,13 +80,13 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedMeRoute: typeof AuthenticatedMeRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedMeRoute: AuthenticatedMeRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedProjectsProjectIdRoute: AuthenticatedProjectsProjectIdRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -95,35 +96,35 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
-  '/me': typeof AuthenticatedMeRoute
   '/': typeof AuthenticatedIndexRoute
+  '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
 }
 
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
-  '/me': typeof AuthenticatedMeRoute
   '/': typeof AuthenticatedIndexRoute
+  '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
-  '/_authenticated/me': typeof AuthenticatedMeRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/auth' | '/me' | '/'
+  fullPaths: '' | '/auth' | '/' | '/projects/$projectId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth' | '/me' | '/'
+  to: '/auth' | '/' | '/projects/$projectId'
   id:
     | '__root__'
     | '/_authenticated'
     | '/auth'
-    | '/_authenticated/me'
     | '/_authenticated/'
+    | '/_authenticated/projects/$projectId'
   fileRoutesById: FileRoutesById
 }
 
@@ -154,19 +155,19 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated.tsx",
       "children": [
-        "/_authenticated/me",
-        "/_authenticated/"
+        "/_authenticated/",
+        "/_authenticated/projects/$projectId"
       ]
     },
     "/auth": {
       "filePath": "auth.tsx"
     },
-    "/_authenticated/me": {
-      "filePath": "_authenticated.me.tsx",
-      "parent": "/_authenticated"
-    },
     "/_authenticated/": {
       "filePath": "_authenticated.index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/projects/$projectId": {
+      "filePath": "_authenticated.projects.$projectId.tsx",
       "parent": "/_authenticated"
     }
   }

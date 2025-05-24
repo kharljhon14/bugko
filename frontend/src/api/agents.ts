@@ -1,6 +1,9 @@
 import type { ProjectSchemaType } from '@/schemas/projects';
 import type { GoogleUser } from '@/types/auth';
-import type { GetAllProjectResponse } from '@/types/projects';
+import type { Project } from '@/types/projects';
+import type { GenericResponseArray } from '@/types/response';
+import type { Ticket } from '@/types/tickets';
+
 import axios, { type AxiosResponse } from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:8080';
@@ -22,15 +25,21 @@ const auth = {
 
 const projects = {
   getAllProjectByOwner: (ownerID: string) =>
-    requests.get<GetAllProjectResponse>(`/projects?owner_id=${ownerID}`),
+    requests.get<GenericResponseArray<Project>>(`/projects?owner_id=${ownerID}`),
   createProject: (body: ProjectSchemaType) => requests.post('/projects', body),
   updateProject: (id: string, body: ProjectSchemaType) => requests.patch(`/projects/${id}`, body),
   deleteProject: (id: string) => requests.delete(`/projects/${id}`)
 };
 
+const tickets = {
+  getAllTicketByProject: (projectID: string) =>
+    requests.get<GenericResponseArray<Ticket>>(`/tickets?project_id=${projectID}`)
+};
+
 const agent = {
   auth,
-  projects
+  projects,
+  tickets
 };
 
 export default agent;

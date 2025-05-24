@@ -4,6 +4,7 @@ import { NotFoundError, UnauthorizedError } from '../utils/error';
 import {
   handleCreateTicket,
   handleDeleteTicket,
+  handleGetAllTicketByProject,
   handleGetTicketByID,
   handleUpdateTicket
 } from '../services/tickets.services';
@@ -19,6 +20,33 @@ export function getTicketByIDHandler(fastify: FastifyInstance) {
       const ticket = await handleGetTicketByID(client, id);
 
       return reply.send({ data: ticket });
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        return reply.code(404).send({ error: error.message });
+      }
+
+      if (error instanceof DatabaseError) {
+        return reply.code(500).send({ error: error.detail });
+      }
+
+      if (error instanceof Error) {
+        return reply.code(500).send({ error: error.message });
+      }
+    } finally {
+      client.release();
+    }
+  };
+}
+
+export function getAllTicketsByProjectHandler(fastify: FastifyInstance) {
+  return async function (request: FastifyRequest, reply: FastifyReply) {
+    const client = await fastify.pg.connect();
+
+    try {
+      const { project_id } = request.query as { project_id: number };
+      const tickets = await handleGetAllTicketByProject(client, Number(project_id));
+
+      return reply.send({ data: tickets });
     } catch (error) {
       if (error instanceof NotFoundError) {
         return reply.code(404).send({ error: error.message });

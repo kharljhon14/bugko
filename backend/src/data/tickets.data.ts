@@ -21,15 +21,16 @@ export async function getAllTicketsByProject(client: PoolClient, projectID: numb
   const results = await client.query<DBTicket[]>(
     `
         SELECT t.*, u.name AS owner_name, a.name AS assignee_name 
-        INNER JOIN users u ON t.owner_id = u.id
-        INNER JOIN users a ON t.assignee_id = a.id
         FROM tickets t
+        INNER JOIN users u ON t.owner_id = u.id
+        LEFT JOIN users a ON t.assignee_id = a.id
         WHERE t.project_id = $1
+        ORDER BY t.updated_at DESC
     `,
     [projectID]
   );
 
-  results.rows;
+  return results.rows;
 }
 
 export async function createTicket(client: PoolClient, ticket: CreateTicketSchemaType) {

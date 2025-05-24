@@ -28,7 +28,7 @@ export default function ProjectsContainer({ projects }: Props) {
 
   return (
     <>
-      <div className="p-8 flex flex-col">
+      <div className="flex flex-col">
         <div className="ml-auto">
           <Dialog
             open={openFormModal}

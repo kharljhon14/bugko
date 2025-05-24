@@ -3,6 +3,7 @@ import { isAuthenticated } from '../middlewares/auth';
 import {
   createTicketHandler,
   deleteTicketHandler,
+  getAllTicketsByProjectHandler,
   getTicketByIDHandler,
   updatedTicketHandler
 } from '../controllers/tickets.controller';
@@ -33,6 +34,23 @@ export default function ticketsRoutes(fastify: FastifyInstance) {
       }
     },
     getTicketByIDHandler(fastify)
+  );
+
+  fastify.get(
+    '/',
+    {
+      preHandler: [isAuthenticated],
+      schema: {
+        querystring: {
+          type: 'object',
+          properties: {
+            project_id: { type: 'number' }
+          },
+          required: ['project_id']
+        }
+      }
+    },
+    getAllTicketsByProjectHandler(fastify)
   );
 
   fastify.patch(

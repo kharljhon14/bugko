@@ -18,9 +18,11 @@ export const Route = createFileRoute('/_authenticated')({
   },
   component: () => (
     <>
-      <AppProviders>
-        <Outlet />
-      </AppProviders>
+      <div className="p-8 flex flex-col">
+        <AppProviders>
+          <Outlet />
+        </AppProviders>
+      </div>
       <TanStackRouterDevtools />
     </>
   )
