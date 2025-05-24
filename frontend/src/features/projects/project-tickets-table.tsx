@@ -3,6 +3,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import type { Ticket } from '@/types/tickets';
 import DataTable from '@/components/common/data-table';
+import { Badge } from '@/components/ui/badge';
 
 interface Props {
   tickets: Ticket[];
@@ -16,7 +17,7 @@ export default function ProjectTicketsTable({ tickets }: Props) {
     },
     {
       accessorKey: 'owner_name',
-      header: 'Project Owner'
+      header: 'Ticket Owner'
     },
     {
       accessorKey: 'assignee_name',
@@ -24,15 +25,31 @@ export default function ProjectTicketsTable({ tickets }: Props) {
     },
     {
       accessorKey: 'title',
-      header: 'Title'
+      header: 'Title',
+      cell: ({ row }) => {
+        return <p className="truncate max-w-xs">{row.original.title}</p>;
+      }
     },
     {
       accessorKey: 'description',
-      header: 'Description'
+      header: 'Description',
+      cell: ({ row }) => {
+        return <p className="truncate max-w-xs">{row.original.description}</p>;
+      }
     },
     {
       accessorKey: 'status',
-      header: 'Status'
+      header: 'Status',
+      cell: ({ row }) => {
+        switch (row.original.status) {
+          case 'open':
+            return <Badge className="bg-green-600">Open</Badge>;
+          case 'in_progress':
+            return <Badge>In Progress</Badge>;
+          case 'closed':
+            return <Badge className="bg-gray-700">Closed</Badge>;
+        }
+      }
     },
     {
       accessorKey: 'created_at',
@@ -73,7 +90,7 @@ export default function ProjectTicketsTable({ tickets }: Props) {
           <div className="flex gap-4">
             <Button>View</Button>
             <Button variant="outline">Update</Button>
-            <Button>Delete</Button>
+            <Button variant="destructive">Delete</Button>
           </div>
         );
       }

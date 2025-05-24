@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 export const createSSOSchema = z.object({
   user_id: z.number().min(1),
