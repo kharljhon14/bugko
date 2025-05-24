@@ -9,7 +9,7 @@ interface Props {
   tickets: Ticket[];
 }
 
-export default function ProjectTicketsTable({ tickets }: Props) {
+export default function TicketsTable({ tickets }: Props) {
   const columns: ColumnDef<Ticket>[] = [
     {
       accessorKey: 'id',

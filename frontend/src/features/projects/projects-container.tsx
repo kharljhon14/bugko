@@ -36,7 +36,7 @@ export default function ProjectsContainer({ projects }: Props) {
           >
             <DialogTrigger
               onClick={handleOpenDialog}
-              className={buttonVariants({ variant: 'default' })}
+              className={buttonVariants({ variant: 'default', size: 'lg' })}
             >
               Create Project
             </DialogTrigger>

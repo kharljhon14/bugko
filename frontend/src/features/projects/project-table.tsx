@@ -1,9 +1,10 @@
 import DataTable from '@/components/common/data-table';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 
 import type { Project } from '@/types/projects';
 import type { ColumnDef } from '@tanstack/react-table';
 import ProjectDeleteButton from './project-delete-button';
+import { Link } from '@tanstack/react-router';
 
 interface Props {
   projects: Project[];
@@ -67,7 +68,13 @@ export default function ProjectTable({ projects, setSelectedProject, setOpenForm
       cell: ({ row }) => {
         return (
           <div className="flex gap-4">
-            <Button>View</Button>
+            <Link
+              className={buttonVariants({ variant: 'default' })}
+              to="/projects/$projectId"
+              params={{ projectId: row.original.id }}
+            >
+              View
+            </Link>
             <Button
               onClick={() => handleUpdateProject(row.original)}
               variant="outline"

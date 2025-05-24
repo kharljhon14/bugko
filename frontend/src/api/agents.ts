@@ -1,7 +1,7 @@
 import type { ProjectSchemaType } from '@/schemas/projects';
 import type { GoogleUser } from '@/types/auth';
 import type { Project } from '@/types/projects';
-import type { GenericResponseArray } from '@/types/response';
+import type { GenericResponse, GenericResponseArray } from '@/types/response';
 import type { Ticket } from '@/types/tickets';
 
 import axios, { type AxiosResponse } from 'axios';
@@ -26,6 +26,8 @@ const auth = {
 const projects = {
   getAllProjectByOwner: (ownerID: string) =>
     requests.get<GenericResponseArray<Project>>(`/projects?owner_id=${ownerID}`),
+  getProjectByID: (projectID: string) =>
+    requests.get<GenericResponse<Project>>(`/projects/${projectID}`),
   createProject: (body: ProjectSchemaType) => requests.post('/projects', body),
   updateProject: (id: string, body: ProjectSchemaType) => requests.patch(`/projects/${id}`, body),
   deleteProject: (id: string) => requests.delete(`/projects/${id}`)

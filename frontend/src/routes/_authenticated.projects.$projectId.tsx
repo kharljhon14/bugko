@@ -1,5 +1,6 @@
 import agent from '@/api/agents';
-import ProjectTicketsTable from '@/features/projects/project-tickets-table';
+
+import TicketsContinaer from '@/features/tickets/tickets.container';
 import type { GenericResponseArray } from '@/types/response';
 import type { Ticket } from '@/types/tickets';
 import { useQuery } from '@tanstack/react-query';
@@ -25,5 +26,10 @@ function RouteComponent() {
     return <div>Loading...</div>;
   }
 
-  return <ProjectTicketsTable tickets={data?.data ?? []} />;
+  return (
+    <TicketsContinaer
+      tickets={data?.data ?? []}
+      projectId={projectId}
+    />
+  );
 }
