@@ -70,7 +70,7 @@ export default function TicketsContainer({ projectId }: Props) {
             size="icon"
             asChild
           >
-            <Link to="/">
+            <Link to="/projects">
               <ChevronLeft />
             </Link>
           </Button>
@@ -82,7 +82,7 @@ export default function TicketsContainer({ projectId }: Props) {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/">Projects</BreadcrumbLink>
+                  <BreadcrumbLink href="/projects">Projects</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>

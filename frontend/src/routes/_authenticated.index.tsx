@@ -1,13 +1,13 @@
-import ProjectsContainer from '@/features/projects/projects-container';
-
-import { createFileRoute, useLoaderData } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_authenticated/')({
   component: RouteComponent
 });
 
 function RouteComponent() {
-  const user = useLoaderData({ from: '/_authenticated' });
-
-  return <ProjectsContainer user={user} />;
+  return (
+    <div>
+      <h1>Home</h1>
+    </div>
+  );
 }
