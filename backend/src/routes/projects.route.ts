@@ -40,7 +40,8 @@ export default function projectsRoutes(fastify: FastifyInstance) {
         querystring: {
           type: 'object',
           properties: {
-            owner_id: { type: 'number' }
+            owner_id: { type: 'number' },
+            page: { type: 'number', minimum: 1 }
           },
           required: ['owner_id']
         }

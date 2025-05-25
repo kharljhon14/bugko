@@ -73,11 +73,15 @@ export function getProjectsByOwnerHandler(fastify: FastifyInstance) {
   return async function (request: FastifyRequest, reply: FastifyReply) {
     const client = await fastify.pg.connect();
     try {
-      const { owner_id } = request.query as { owner_id: number };
+      const { owner_id, page } = request.query as { owner_id: number; page: number };
 
-      const projects = await handleGetProjectsByOwner(client, Number(owner_id));
+      const { projects, metadata } = await handleGetProjectsByOwner(
+        client,
+        Number(owner_id),
+        page ?? 1
+      );
 
-      return reply.send({ data: projects });
+      return reply.send({ data: projects, _metadata: metadata });
     } catch (error) {
       if (error instanceof NotFoundError) {
         return reply.code(404).send({ error: error.message });

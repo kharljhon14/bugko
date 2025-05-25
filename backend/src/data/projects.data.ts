@@ -1,6 +1,7 @@
 import { PoolClient } from 'pg';
 import { ProjectSchemaType } from '../schemas/projects.schema';
 import { DBProject } from '../types/projects';
+import { TotalCount } from '../types/metadata';
 
 // Create Project
 export async function createProject(
@@ -28,17 +29,21 @@ export async function getProjectById(
 // Get Projects By Owner
 export async function getProjectsByOwner(
   client: PoolClient,
-  ownerId: number
-): Promise<DBProject[]> {
-  const results = await client.query<DBProject>(
+  ownerId: number,
+  limit: number,
+  offset: number
+) {
+  const results = await client.query<DBProject & TotalCount>(
     `
-      SELECT p.id, p.name, p.created_at, p.updated_at, u.id AS owner_id ,u.name AS owner_name
+      SELECT p.id, p.name, p.created_at, p.updated_at, u.id AS owner_id ,u.name AS owner_name,
+      COUNT(*) OVER() AS total_count
       FROM projects p
       INNER JOIN users u ON p.owner = u.id
       WHERE p.owner = $1
-      ORDER BY p.updated_at DESC;
+      ORDER BY p.updated_at DESC
+      LIMIT $2 OFFSET $3
     `,
-    [ownerId]
+    [ownerId, limit, offset]
   );
 
   return results.rows;
