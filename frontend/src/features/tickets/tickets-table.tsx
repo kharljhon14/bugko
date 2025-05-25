@@ -1,4 +1,4 @@
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef, OnChangeFn, PaginationState } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
 import type { Ticket } from '@/types/tickets';
@@ -8,11 +8,21 @@ import { Flame } from 'lucide-react';
 
 interface Props {
   tickets: Ticket[];
+  pagination: PaginationState;
+  setPagination: OnChangeFn<PaginationState>;
+  totalPage: number;
   setSelectedTicket: (ticket: Ticket) => void;
   setOpenFormModal: (value: boolean) => void;
 }
 
-export default function TicketsTable({ tickets, setSelectedTicket, setOpenFormModal }: Props) {
+export default function TicketsTable({
+  tickets,
+  pagination,
+  setPagination,
+  totalPage,
+  setSelectedTicket,
+  setOpenFormModal
+}: Props) {
   const handleUpdateTicket = (data: Ticket) => {
     setSelectedTicket(data);
     setOpenFormModal(true);
@@ -51,12 +61,19 @@ export default function TicketsTable({ tickets, setSelectedTicket, setOpenFormMo
       cell: ({ row }) => {
         switch (row.original.priority) {
           case 'low':
-            return <Flame className=" text-red-600" />;
+            return (
+              <div className="flex">
+                <Flame className=" text-red-600" />
+                <Flame className=" text-gray-800" />
+                <Flame className=" text-gray-800" />
+              </div>
+            );
           case 'medium':
             return (
               <div className="flex">
                 <Flame className=" text-red-600" />
                 <Flame className=" text-red-600" />
+                <Flame className=" text-gray-800" />
               </div>
             );
           case 'high':
@@ -137,6 +154,9 @@ export default function TicketsTable({ tickets, setSelectedTicket, setOpenFormMo
 
   return (
     <DataTable
+      pagination={pagination}
+      setPagination={setPagination}
+      totalPage={totalPage}
       columns={columns}
       data={tickets}
     />

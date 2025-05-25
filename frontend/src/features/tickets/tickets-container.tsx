@@ -22,14 +22,15 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog';
 import TicketForm from './ticket-form';
+import type { GenericResponseArray } from '@/types/response';
+import type { PaginationState } from '@tanstack/react-table';
 
 interface Props {
-  tickets: Ticket[];
   projectId: string;
 }
 
-export default function TicketsContainer({ tickets, projectId }: Props) {
-  const { data } = useQuery({
+export default function TicketsContainer({ projectId }: Props) {
+  const projectQuery = useQuery({
     queryKey: ['project'],
     queryFn: () => agent.projects.getProjectByID(projectId)
   });
@@ -41,6 +42,24 @@ export default function TicketsContainer({ tickets, projectId }: Props) {
     setOpenFormModal(true);
     setSelectedTicket(undefined);
   };
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10
+  });
+
+  const { data, isError, error, isLoading } = useQuery<GenericResponseArray<Ticket>>({
+    queryKey: ['tickets', pagination.pageIndex + 1],
+    queryFn: () => agent.tickets.getAllTicketByProject(projectId, pagination.pageIndex + 1)
+  });
+
+  if (isError || error) {
+    return <div>Something went wrong!</div>;
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
@@ -58,7 +77,7 @@ export default function TicketsContainer({ tickets, projectId }: Props) {
 
           <div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">
-              {data?.data.name} Tickets Overview
+              {projectQuery.data?.data.name} Tickets Overview
             </h1>
             <Breadcrumb>
               <BreadcrumbList>
@@ -67,7 +86,7 @@ export default function TicketsContainer({ tickets, projectId }: Props) {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>{data?.data.name}</BreadcrumbPage>
+                  <BreadcrumbPage>{projectQuery.data?.data.name}</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -100,7 +119,10 @@ export default function TicketsContainer({ tickets, projectId }: Props) {
       </div>
 
       <TicketsTable
-        tickets={tickets}
+        tickets={data?.data ?? []}
+        pagination={pagination}
+        setPagination={setPagination}
+        totalPage={data?._metadata.lastPage ?? 1}
         setSelectedTicket={setSelectedTicket}
         setOpenFormModal={setOpenFormModal}
       />

@@ -40,7 +40,7 @@ export async function getProjectsByOwner(
       FROM projects p
       INNER JOIN users u ON p.owner = u.id
       WHERE p.owner = $1
-      ORDER BY p.updated_at DESC
+      ORDER BY p.created_at DESC
       LIMIT $2 OFFSET $3
     `,
     [ownerId, limit, offset]

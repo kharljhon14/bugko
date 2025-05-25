@@ -6,6 +6,6 @@ export function calaculateMetadata(totalRecords: number, page: number, pageSize:
     pageSize: pageSize,
     currentPage: page,
     firstPage: 1,
-    lastPage: Math.ceil(totalRecords / pageSize)
+    lastPage: totalRecords > 0 ? Math.ceil(totalRecords / pageSize) : 1
   };
 }

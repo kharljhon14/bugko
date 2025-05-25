@@ -26,8 +26,8 @@ const auth = {
 };
 
 const projects = {
-  getAllProjectByOwner: (ownerID: string) =>
-    requests.get<GenericResponseArray<Project>>(`/projects?owner_id=${ownerID}`),
+  getAllProjectByOwner: (ownerID: string, page: number) =>
+    requests.get<GenericResponseArray<Project>>(`/projects?owner_id=${ownerID}&page=${page}`),
   getProjectByID: (projectID: string) =>
     requests.get<GenericResponse<Project>>(`/projects/${projectID}`),
   createProject: (body: ProjectSchemaType) => requests.post('/projects', body),
@@ -43,8 +43,8 @@ const projectMembers = {
 };
 
 const tickets = {
-  getAllTicketByProject: (projectID: string) =>
-    requests.get<GenericResponseArray<Ticket>>(`/tickets?project_id=${projectID}`),
+  getAllTicketByProject: (projectID: string, page: number) =>
+    requests.get<GenericResponseArray<Ticket>>(`/tickets?project_id=${projectID}&page=${page}`),
   createTicket: (body: TicketRequest) =>
     requests.post<GenericResponse<Ticket>, TicketSchemaType>('/tickets', body),
   updateTicket: (id: string, body: TicketSchemaType) =>

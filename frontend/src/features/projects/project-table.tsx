@@ -2,17 +2,27 @@ import DataTable from '@/components/common/data-table';
 import { Button, buttonVariants } from '@/components/ui/button';
 
 import type { Project } from '@/types/projects';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef, OnChangeFn, PaginationState } from '@tanstack/react-table';
 import ProjectDeleteButton from './project-delete-button';
 import { Link } from '@tanstack/react-router';
 
 interface Props {
   projects: Project[];
+  pagination: PaginationState;
+  setPagination: OnChangeFn<PaginationState>;
+  totalPage: number;
   setSelectedProject: (project: Project) => void;
   setOpenFormModal: (value: boolean) => void;
 }
 
-export default function ProjectTable({ projects, setSelectedProject, setOpenFormModal }: Props) {
+export default function ProjectTable({
+  projects,
+  pagination,
+  setPagination,
+  totalPage,
+  setSelectedProject,
+  setOpenFormModal
+}: Props) {
   const handleUpdateProject = (data: Project) => {
     setSelectedProject(data);
     setOpenFormModal(true);
@@ -91,6 +101,9 @@ export default function ProjectTable({ projects, setSelectedProject, setOpenForm
   return (
     <div>
       <DataTable
+        pagination={pagination}
+        setPagination={setPagination}
+        totalPage={totalPage}
         columns={columns}
         data={projects}
       />

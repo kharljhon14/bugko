@@ -12,6 +12,8 @@ import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
+  type OnChangeFn,
+  type PaginationState,
   useReactTable
 } from '@tanstack/react-table';
 import { Button } from '../ui/button';
@@ -19,14 +21,29 @@ import { Button } from '../ui/button';
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  pagination: PaginationState;
+  setPagination: OnChangeFn<PaginationState>;
+  totalPage: number;
 }
 
-export default function DataTable<TData, TValue>({ data, columns }: Props<TData, TValue>) {
+export default function DataTable<TData, TValue>({
+  data,
+  columns,
+  pagination,
+  setPagination,
+  totalPage
+}: Props<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
+    pageCount: totalPage,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel()
+    getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: true,
+    state: {
+      pagination
+    }
   });
 
   return (
@@ -81,24 +98,40 @@ export default function DataTable<TData, TValue>({ data, columns }: Props<TData,
         </TableBody>
       </Table>
 
-      <div className="flex items-center p-4 space-x-2 ">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div>
+      {totalPage > 1 && (
+        <div className="flex items-center gap-2 p-4">
+          <Button
+            onClick={() => table.firstPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {'<<'}
+          </Button>
+          <Button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {'<'}
+          </Button>
+          <Button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            {'>'}
+          </Button>
+          <Button
+            onClick={() => table.lastPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            {'>>'}
+          </Button>
+          <span className="flex items-center gap-1">
+            <div>Page</div>
+            <strong>
+              {table.getState().pagination.pageIndex + 1} of {table.getPageCount().toLocaleString()}
+            </strong>
+          </span>
+        </div>
+      )}
     </div>
   );
 }

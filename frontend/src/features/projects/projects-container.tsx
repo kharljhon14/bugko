@@ -12,12 +12,16 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog';
 import { buttonVariants } from '@/components/ui/button';
+import agent from '@/api/agents';
+import { useQuery } from '@tanstack/react-query';
+import type { GoogleUser } from '@/types/auth';
+import type { PaginationState } from '@tanstack/react-table';
 
 interface Props {
-  projects: Project[];
+  user: GoogleUser;
 }
 
-export default function ProjectsContainer({ projects }: Props) {
+export default function ProjectsContainer({ user }: Props) {
   const [selectedProject, setSelectedProject] = useState<Project | undefined>();
   const [openFormModal, setOpenFormModal] = useState(false);
 
@@ -25,6 +29,24 @@ export default function ProjectsContainer({ projects }: Props) {
     setOpenFormModal(true);
     setSelectedProject(undefined);
   };
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10
+  });
+
+  const { data, isError, error, isLoading } = useQuery({
+    queryKey: ['projects', pagination.pageIndex + 1],
+    queryFn: () => agent.projects.getAllProjectByOwner(user.data.user_id, pagination.pageIndex + 1)
+  });
+
+  if (isError || error) {
+    return <div>Something went wrong!</div>;
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -56,7 +78,10 @@ export default function ProjectsContainer({ projects }: Props) {
         </div>
         <div className="mt-6">
           <ProjectTable
-            projects={projects}
+            projects={data?.data ?? []}
+            pagination={pagination}
+            setPagination={setPagination}
+            totalPage={data?._metadata.lastPage ?? 1}
             setSelectedProject={setSelectedProject}
             setOpenFormModal={setOpenFormModal}
           />
