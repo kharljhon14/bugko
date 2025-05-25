@@ -33,17 +33,15 @@ export async function handleGetAllTicketByProject(client: PoolClient, id: number
   return tickets;
 }
 
-export async function handleCreateTicket(client: PoolClient, ticket: CreateTicketSchemaType) {
-  const projectMember = await getProjectMember(
-    client,
-    Number(ticket.project_id),
-    Number(ticket.owner_id)
-  );
+export async function handleCreateTicket(
+  client: PoolClient,
+  ownerID: string,
+  ticket: CreateTicketSchemaType
+) {
+  const projectMember = await getProjectMember(client, Number(ticket.project_id), Number(ownerID));
 
   if (!projectMember) {
-    throw new UnauthorizedError(
-      `user with id ${ticket.owner_id} is not authorized to perform this action`
-    );
+    throw new UnauthorizedError(`user with id ${ownerID} is not authorized to perform this action`);
   }
 
   const project = await getProjectById(client, Number(ticket.project_id));
@@ -52,7 +50,7 @@ export async function handleCreateTicket(client: PoolClient, ticket: CreateTicke
     throw new NotFoundError(`project with id ${ticket.project_id} not found`);
   }
 
-  const newticket = await createTicket(client, ticket);
+  const newticket = await createTicket(client, Number(ownerID), ticket);
 
   return newticket;
 }

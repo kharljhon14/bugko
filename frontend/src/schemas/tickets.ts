@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const createTicketSchema = z
   .object({
-    assignee_id: z.string().min(1).optional(),
+    assignee_id: z.number().min(1).optional(),
     title: z.string().min(1).max(255),
     description: z.string().max(50000).optional(),
     status: z.enum(['open', 'in_progress', 'closed']).optional(),

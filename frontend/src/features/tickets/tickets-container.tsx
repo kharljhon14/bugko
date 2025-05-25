@@ -89,7 +89,7 @@ export default function TicketsContainer({ tickets, projectId }: Props) {
               <DialogHeader>
                 <DialogTitle>{selectedTicket ? 'Update Ticket' : 'Create Ticket'}</DialogTitle>
               </DialogHeader>
-              <TicketForm />
+              <TicketForm projectID={projectId} />
             </DialogContent>
           </Dialog>
         </div>

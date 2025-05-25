@@ -69,9 +69,10 @@ export function createTicketHandler(fastify: FastifyInstance) {
   return async function (request: FastifyRequest, reply: FastifyReply) {
     const client = await fastify.pg.connect();
     try {
+      const user = request.user as UpdatedPassportUser;
       const body = request.body as CreateTicketSchemaType;
 
-      const newTicket = await handleCreateTicket(client, body);
+      const newTicket = await handleCreateTicket(client, user.user_id, body);
 
       return reply.send({ data: newTicket });
     } catch (error) {

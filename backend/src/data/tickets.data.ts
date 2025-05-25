@@ -33,7 +33,11 @@ export async function getAllTicketsByProject(client: PoolClient, projectID: numb
   return results.rows;
 }
 
-export async function createTicket(client: PoolClient, ticket: CreateTicketSchemaType) {
+export async function createTicket(
+  client: PoolClient,
+  ownerID: number,
+  ticket: CreateTicketSchemaType
+) {
   const fields = Object.keys(ticket);
   const values = Object.values(ticket);
 
@@ -43,13 +47,13 @@ export async function createTicket(client: PoolClient, ticket: CreateTicketSchem
 
   const results = await client.query(
     `
-        INSERT INTO tickets 
-        (${fieldsClause})
+        INSERT INTO tickets
+        (${fieldsClause}, owner_id)
         VALUES 
-        (${valueClause})
+        (${valueClause}, $${values.length + 1})
         RETURNING  *;
     `,
-    values
+    [...values, ownerID]
   );
 
   return results.rows[0];

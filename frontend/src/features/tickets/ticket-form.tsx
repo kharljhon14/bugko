@@ -1,3 +1,4 @@
+import agent from '@/api/agents';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -27,25 +28,41 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { createTicketSchema, type CreateTicketSchemaType } from '@/schemas/tickets';
+import type { CreateTicketRequest } from '@/types/tickets';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { useState } from 'react';
 
 import { useForm, type SubmitHandler } from 'react-hook-form';
 
-const users = [
-  { label: 'Kharl', value: '1' },
-  { label: 'Kharl2', value: '2' },
-  { label: 'Kharl3', value: '3' }
-] as const;
+interface Props {
+  projectID: string;
+}
 
-export default function TicketForm() {
+export default function TicketForm({ projectID }: Props) {
+  const queryClient = useQueryClient();
+
   const [open, setOpen] = useState(false);
   const form = useForm({ resolver: zodResolver(createTicketSchema) });
 
+  const { data, isLoading } = useQuery({
+    queryKey: ['project-members'],
+    queryFn: () => agent.projectMembers.getAllProjectMember(projectID)
+  });
+
+  const createTicket = useMutation({
+    mutationKey: ['tickets'],
+    mutationFn: (data: CreateTicketRequest) => agent.tickets.createTicket(data),
+    onSuccess: () => {
+      alert('Created');
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+    }
+  });
+
   const onSubmit: SubmitHandler<CreateTicketSchemaType> = (data) => {
-    console.log(data);
+    createTicket.mutate({ project_id: Number(projectID), ...data });
   };
 
   return (
@@ -98,7 +115,10 @@ export default function TicketForm() {
                 open={open}
                 onOpenChange={setOpen}
               >
-                <PopoverTrigger asChild>
+                <PopoverTrigger
+                  disabled={isLoading}
+                  asChild
+                >
                   <FormControl>
                     <Button
                       variant="outline"
@@ -110,8 +130,8 @@ export default function TicketForm() {
                       )}
                     >
                       {field.value
-                        ? users.find((u) => u.value === field.value)?.label
-                        : 'Select user'}
+                        ? data?.data.find((u) => Number(u.id) === field.value)?.name
+                        : 'Select User'}
                       <ChevronsUpDown className="opacity-50" />
                     </Button>
                   </FormControl>
@@ -125,20 +145,20 @@ export default function TicketForm() {
                     <CommandList>
                       <CommandEmpty>No Users found.</CommandEmpty>
                       <CommandGroup>
-                        {users.map((u) => (
+                        {data?.data.map((u) => (
                           <CommandItem
-                            value={u.label}
-                            key={u.value}
+                            value={u.id}
+                            key={u.id}
                             onSelect={() => {
-                              form.setValue('assignee_id', u.value);
+                              form.setValue('assignee_id', Number(u.id));
                               setOpen(false);
                             }}
                           >
-                            {u.label}
+                            {u.name}
                             <Check
                               className={cn(
                                 'ml-auto',
-                                u.value === field.value ? 'opacity-100' : 'opacity-0'
+                                Number(u.id) === field.value ? 'opacity-100' : 'opacity-0'
                               )}
                             />
                           </CommandItem>
