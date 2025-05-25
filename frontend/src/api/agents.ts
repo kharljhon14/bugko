@@ -48,7 +48,8 @@ const tickets = {
   createTicket: (body: TicketRequest) =>
     requests.post<GenericResponse<Ticket>, TicketSchemaType>('/tickets', body),
   updateTicket: (id: string, body: TicketSchemaType) =>
-    requests.patch<GenericResponse<Ticket>, TicketSchemaType>(`/tickets/${id}`, body)
+    requests.patch<GenericResponse<Ticket>, TicketSchemaType>(`/tickets/${id}`, body),
+  deleteTicket: (id: string) => requests.delete(`/tickets/${id}`)
 };
 
 const agent = {

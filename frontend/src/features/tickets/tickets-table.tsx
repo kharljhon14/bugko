@@ -5,6 +5,7 @@ import type { Ticket } from '@/types/tickets';
 import DataTable from '@/components/common/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Flame } from 'lucide-react';
+import TicketDeleteButton from './ticket-delete-button';
 
 interface Props {
   tickets: Ticket[];
@@ -178,7 +179,8 @@ export default function TicketsTable({
             >
               Update
             </Button>
-            <Button variant="destructive">Delete</Button>
+            {/* <Button variant="destructive">Delete</Button> */}
+            <TicketDeleteButton ticket={row.original} />
           </div>
         );
       }
