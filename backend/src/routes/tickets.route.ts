@@ -44,7 +44,8 @@ export default function ticketsRoutes(fastify: FastifyInstance) {
         querystring: {
           type: 'object',
           properties: {
-            project_id: { type: 'number' }
+            project_id: { type: 'number' },
+            page: { type: 'number', minimum: 1 }
           },
           required: ['project_id']
         }

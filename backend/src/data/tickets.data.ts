@@ -1,6 +1,7 @@
 import { PoolClient } from 'pg';
 import { DBTicket } from '../types/tickets';
 import { CreateTicketSchemaType, UpdateTicketSchemaType } from '../schemas/tickets.schema';
+import { TotalCount } from '../types/metadata';
 
 export async function getTicketByID(client: PoolClient, id: number) {
   const results = await client.query<DBTicket>(
@@ -17,17 +18,24 @@ export async function getTicketByID(client: PoolClient, id: number) {
   return results.rows[0];
 }
 
-export async function getAllTicketsByProject(client: PoolClient, projectID: number) {
-  const results = await client.query<DBTicket[]>(
+export async function getAllTicketsByProject(
+  client: PoolClient,
+  projectID: number,
+  limit: number,
+  offset: number
+) {
+  const results = await client.query<DBTicket & TotalCount>(
     `
-        SELECT t.*, u.name AS owner_name, a.name AS assignee_name 
+        SELECT t.*, u.name AS owner_name, a.name AS assignee_name,
+        COUNT(*) OVER() AS total_count
         FROM tickets t
         INNER JOIN users u ON t.owner_id = u.id
         LEFT JOIN users a ON t.assignee_id = a.id
         WHERE t.project_id = $1
         ORDER BY t.created_at DESC
+        LIMIT $2 OFFSET $3
     `,
-    [projectID]
+    [projectID, limit, offset]
   );
 
   return results.rows;

@@ -10,6 +10,7 @@ import { NotFoundError, UnauthorizedError } from '../utils/error';
 import { getProjectById } from '../data/projects.data';
 import { CreateTicketSchemaType, UpdateTicketSchemaType } from '../schemas/tickets.schema';
 import { getProjectMember } from '../data/project_members';
+import { calaculateMetadata } from '../utils/metadata';
 
 export async function handleGetTicketByID(client: PoolClient, id: number) {
   const ticket = await getTicketByID(client, id);
@@ -21,16 +22,23 @@ export async function handleGetTicketByID(client: PoolClient, id: number) {
   return ticket;
 }
 
-export async function handleGetAllTicketByProject(client: PoolClient, id: number) {
+export async function handleGetAllTicketByProject(client: PoolClient, id: number, page: number) {
+  const pageSize = 10;
+  const offset = (page - 1) * pageSize;
+
   const project = await getProjectById(client, id);
 
   if (!project) {
     throw new NotFoundError(`project with id ${id} not found`);
   }
 
-  const tickets = await getAllTicketsByProject(client, id);
+  const tickets = await getAllTicketsByProject(client, id, pageSize, offset);
+  const totalCount = tickets.length > 0 ? Number(tickets[0].total_count) : 0;
 
-  return tickets;
+  const ticketsWitoutTotalCount = tickets.map(({ total_count: _total_count, ...data }) => data);
+  const metadata = calaculateMetadata(totalCount, page, pageSize);
+
+  return { tickets: ticketsWitoutTotalCount, metadata };
 }
 
 export async function handleCreateTicket(

@@ -43,10 +43,15 @@ export function getAllTicketsByProjectHandler(fastify: FastifyInstance) {
     const client = await fastify.pg.connect();
 
     try {
-      const { project_id } = request.query as { project_id: number };
-      const tickets = await handleGetAllTicketByProject(client, Number(project_id));
+      const { project_id, page } = request.query as { project_id: number; page: number };
 
-      return reply.send({ data: tickets });
+      const { tickets, metadata } = await handleGetAllTicketByProject(
+        client,
+        Number(project_id),
+        page ?? 1
+      );
+
+      return reply.send({ data: tickets, _metadata: metadata });
     } catch (error) {
       if (error instanceof NotFoundError) {
         return reply.code(404).send({ error: error.message });
