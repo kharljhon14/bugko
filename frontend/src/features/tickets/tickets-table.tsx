@@ -3,9 +3,10 @@ import type { ColumnDef, OnChangeFn, PaginationState } from '@tanstack/react-tab
 import { Button } from '@/components/ui/button';
 import type { Ticket } from '@/types/tickets';
 import DataTable from '@/components/common/data-table';
-import { Badge } from '@/components/ui/badge';
-import { Flame } from 'lucide-react';
+
 import TicketDeleteButton from './ticket-delete-button';
+import { Link } from '@tanstack/react-router';
+import { renderPriority, renderStatus } from '@/utils/renderers';
 
 interface Props {
   tickets: Ticket[];
@@ -93,46 +94,14 @@ export default function TicketsTable({
       accessorKey: 'priority',
       header: 'Priority',
       cell: ({ row }) => {
-        switch (row.original.priority) {
-          case 'low':
-            return (
-              <div className="flex">
-                <Flame className=" text-red-600" />
-                <Flame className=" text-gray-800" />
-                <Flame className=" text-gray-800" />
-              </div>
-            );
-          case 'medium':
-            return (
-              <div className="flex">
-                <Flame className=" text-red-600" />
-                <Flame className=" text-red-600" />
-                <Flame className=" text-gray-800" />
-              </div>
-            );
-          case 'high':
-            return (
-              <div className="flex">
-                <Flame className=" text-red-600" />
-                <Flame className=" text-red-600" />
-                <Flame className=" text-red-600" />
-              </div>
-            );
-        }
+        return renderPriority(row.original.priority);
       }
     },
     {
       accessorKey: 'status',
       header: 'Status',
       cell: ({ row }) => {
-        switch (row.original.status) {
-          case 'open':
-            return <Badge className="bg-green-600">Open</Badge>;
-          case 'in_progress':
-            return <Badge>In Progress</Badge>;
-          case 'closed':
-            return <Badge className="bg-gray-700">Closed</Badge>;
-        }
+        return renderStatus(row.original.status);
       }
     },
     {
@@ -172,7 +141,14 @@ export default function TicketsTable({
       cell: ({ row }) => {
         return (
           <div className="flex gap-4">
-            <Button>View</Button>
+            <Button asChild>
+              <Link
+                to="/tickets/$ticketId"
+                params={{ ticketId: row.original.id }}
+              >
+                View
+              </Link>
+            </Button>
             <Button
               onClick={() => handleUpdateTicket(row.original)}
               variant="outline"

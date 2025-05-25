@@ -100,9 +100,9 @@ export default function TicketsContainer({ projectId }: Props) {
           >
             <DialogTrigger
               onClick={handleOpenDialog}
-              className={buttonVariants({ variant: 'default', size: 'lg' })}
+              className={buttonVariants({ variant: 'default' })}
             >
-              Create Project
+              Create Ticket
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

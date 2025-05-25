@@ -45,6 +45,8 @@ const projectMembers = {
 const tickets = {
   getAllTicketByProject: (projectID: string, page: number) =>
     requests.get<GenericResponseArray<Ticket>>(`/tickets?project_id=${projectID}&page=${page}`),
+  getTicketByID: (ticketID: string) =>
+    requests.get<GenericResponse<Ticket>>(`/tickets/${ticketID}`),
   createTicket: (body: TicketRequest) =>
     requests.post<GenericResponse<Ticket>, TicketSchemaType>('/tickets', body),
   updateTicket: (id: string, body: TicketSchemaType) =>

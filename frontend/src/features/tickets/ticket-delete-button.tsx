@@ -12,19 +12,24 @@ import {
 import type { Ticket } from '@/types/tickets';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from '@tanstack/react-router';
 
 interface Props {
   ticket: Ticket;
+  redirect?: boolean;
 }
 
-export default function TicketDeleteButton({ ticket }: Props) {
+export default function TicketDeleteButton({ ticket, redirect = false }: Props) {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   const deleteTicket = useMutation({
     mutationKey: ['tickets'],
     mutationFn: ({ id }: { id: string }) => agent.tickets.deleteTicket(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      if (redirect) {
+        router.navigate({ to: '/projects/$projectId', params: { projectId: ticket.project_id } });
+      }
     }
   });
 

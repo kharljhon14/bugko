@@ -16,6 +16,7 @@ import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexImport } from './routes/_authenticated.index'
 import { Route as AuthenticatedProjectsImport } from './routes/_authenticated.projects'
 import { Route as AuthenticatedProjectsIndexImport } from './routes/_authenticated.projects.index'
+import { Route as AuthenticatedTicketsTicketIdImport } from './routes/_authenticated.tickets.$ticketId'
 import { Route as AuthenticatedProjectsProjectIdImport } from './routes/_authenticated.projects.$projectId'
 
 // Create/Update Routes
@@ -50,6 +51,13 @@ const AuthenticatedProjectsIndexRoute = AuthenticatedProjectsIndexImport.update(
     getParentRoute: () => AuthenticatedProjectsRoute,
   } as any,
 )
+
+const AuthenticatedTicketsTicketIdRoute =
+  AuthenticatedTicketsTicketIdImport.update({
+    id: '/tickets/$ticketId',
+    path: '/tickets/$ticketId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 const AuthenticatedProjectsProjectIdRoute =
   AuthenticatedProjectsProjectIdImport.update({
@@ -97,6 +105,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdImport
       parentRoute: typeof AuthenticatedProjectsImport
     }
+    '/_authenticated/tickets/$ticketId': {
+      id: '/_authenticated/tickets/$ticketId'
+      path: '/tickets/$ticketId'
+      fullPath: '/tickets/$ticketId'
+      preLoaderRoute: typeof AuthenticatedTicketsTicketIdImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/projects/': {
       id: '/_authenticated/projects/'
       path: '/'
@@ -127,11 +142,13 @@ const AuthenticatedProjectsRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedTicketsTicketIdRoute: typeof AuthenticatedTicketsTicketIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedProjectsRoute: AuthenticatedProjectsRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedTicketsTicketIdRoute: AuthenticatedTicketsTicketIdRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -144,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/projects': typeof AuthenticatedProjectsRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
+  '/tickets/$ticketId': typeof AuthenticatedTicketsTicketIdRoute
   '/projects/': typeof AuthenticatedProjectsIndexRoute
 }
 
@@ -151,6 +169,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/': typeof AuthenticatedIndexRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
+  '/tickets/$ticketId': typeof AuthenticatedTicketsTicketIdRoute
   '/projects': typeof AuthenticatedProjectsIndexRoute
 }
 
@@ -161,6 +180,7 @@ export interface FileRoutesById {
   '/_authenticated/projects': typeof AuthenticatedProjectsRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
+  '/_authenticated/tickets/$ticketId': typeof AuthenticatedTicketsTicketIdRoute
   '/_authenticated/projects/': typeof AuthenticatedProjectsIndexRoute
 }
 
@@ -172,9 +192,15 @@ export interface FileRouteTypes {
     | '/projects'
     | '/'
     | '/projects/$projectId'
+    | '/tickets/$ticketId'
     | '/projects/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth' | '/' | '/projects/$projectId' | '/projects'
+  to:
+    | '/auth'
+    | '/'
+    | '/projects/$projectId'
+    | '/tickets/$ticketId'
+    | '/projects'
   id:
     | '__root__'
     | '/_authenticated'
@@ -182,6 +208,7 @@ export interface FileRouteTypes {
     | '/_authenticated/projects'
     | '/_authenticated/'
     | '/_authenticated/projects/$projectId'
+    | '/_authenticated/tickets/$ticketId'
     | '/_authenticated/projects/'
   fileRoutesById: FileRoutesById
 }
@@ -214,7 +241,8 @@ export const routeTree = rootRoute
       "filePath": "_authenticated.tsx",
       "children": [
         "/_authenticated/projects",
-        "/_authenticated/"
+        "/_authenticated/",
+        "/_authenticated/tickets/$ticketId"
       ]
     },
     "/auth": {
@@ -235,6 +263,10 @@ export const routeTree = rootRoute
     "/_authenticated/projects/$projectId": {
       "filePath": "_authenticated.projects.$projectId.tsx",
       "parent": "/_authenticated/projects"
+    },
+    "/_authenticated/tickets/$ticketId": {
+      "filePath": "_authenticated.tickets.$ticketId.tsx",
+      "parent": "/_authenticated"
     },
     "/_authenticated/projects/": {
       "filePath": "_authenticated.projects.index.tsx",

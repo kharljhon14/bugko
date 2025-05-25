@@ -1,6 +1,6 @@
 import agent from '@/api/agents';
 import { AppSidebar } from '@/components/common/app-sidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import AppProviders from '@/providers/providers';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 // import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
@@ -23,7 +23,8 @@ export const Route = createFileRoute('/_authenticated')({
       <div className="p-8 flex flex-col">
         <SidebarProvider>
           <AppSidebar />
-          <main className="w-screen">
+          <main className="w-full">
+            <SidebarTrigger />
             <AppProviders>
               <Outlet />
             </AppProviders>
