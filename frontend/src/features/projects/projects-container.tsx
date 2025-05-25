@@ -51,7 +51,11 @@ export default function ProjectsContainer({ user }: Props) {
   return (
     <>
       <div className="flex flex-col">
-        <div className="ml-auto">
+        <div className="flex justify-between items-center w-full ml-auto">
+          <div>
+            <h1 className="text-3xl font-semibold">Welcome, {user.data.name}!</h1>
+            <p className="text-muted-foreground">Here are your projects.</p>
+          </div>
           <Dialog
             open={openFormModal}
             onOpenChange={setOpenFormModal}

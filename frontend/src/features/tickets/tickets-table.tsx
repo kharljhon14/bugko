@@ -31,28 +31,61 @@ export default function TicketsTable({
   const columns: ColumnDef<Ticket>[] = [
     {
       accessorKey: 'id',
-      header: 'ID'
+      header: 'ID',
+      cell: ({ row }) => {
+        return (
+          <p className={`truncate ${row.original.status === 'closed' && 'line-through'}`}>
+            {row.original.id}
+          </p>
+        );
+      }
     },
     {
       accessorKey: 'owner_name',
-      header: 'Ticket Owner'
+      header: 'Ticket Owner',
+      cell: ({ row }) => {
+        return (
+          <p className={`truncate ${row.original.status === 'closed' && 'line-through'}`}>
+            {row.original.owner_name}
+          </p>
+        );
+      }
     },
     {
       accessorKey: 'assignee_name',
-      header: 'Assign To'
+      header: 'Assign To',
+      cell: ({ row }) => {
+        return (
+          <p className={`truncate ${row.original.status === 'closed' && 'line-through'}`}>
+            {row.original.assignee_name}
+          </p>
+        );
+      }
     },
     {
       accessorKey: 'title',
       header: 'Title',
       cell: ({ row }) => {
-        return <p className="truncate max-w-xs">{row.original.title}</p>;
+        return (
+          <p className={`truncate ${row.original.status === 'closed' && 'line-through'}`}>
+            {row.original.title}
+          </p>
+        );
       }
     },
     {
       accessorKey: 'description',
       header: 'Description',
       cell: ({ row }) => {
-        return <p className="truncate max-w-xs">{row.original.description}</p>;
+        return (
+          <p
+            className={`truncate max-w-[200px] ${
+              row.original.status === 'closed' && 'line-through'
+            }`}
+          >
+            {row.original.description}
+          </p>
+        );
       }
     },
     {

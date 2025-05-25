@@ -11,6 +11,9 @@ import {
 } from '@/components/ui/sidebar';
 import { Home, Inbox } from 'lucide-react';
 import { Button } from '../ui/button';
+import { useMutation } from '@tanstack/react-query';
+import agent from '@/api/agents';
+import { useRouter } from '@tanstack/react-router';
 
 // Menu items.
 const items = [
@@ -27,6 +30,16 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const router = useRouter();
+
+  const logout = useMutation({
+    mutationKey: ['user'],
+    mutationFn: agent.auth.logout,
+    onSuccess: () => {
+      router.navigate({ to: '/auth' });
+    }
+  });
+
   return (
     <Sidebar defaultChecked>
       <SidebarContent>
@@ -49,7 +62,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <Button>Logout</Button>
+        <Button onClick={() => logout.mutate()}>Logout</Button>
       </SidebarFooter>
     </Sidebar>
   );
