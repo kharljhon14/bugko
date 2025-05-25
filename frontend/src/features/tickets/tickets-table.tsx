@@ -8,9 +8,16 @@ import { Flame } from 'lucide-react';
 
 interface Props {
   tickets: Ticket[];
+  setSelectedTicket: (ticket: Ticket) => void;
+  setOpenFormModal: (value: boolean) => void;
 }
 
-export default function TicketsTable({ tickets }: Props) {
+export default function TicketsTable({ tickets, setSelectedTicket, setOpenFormModal }: Props) {
+  const handleUpdateTicket = (data: Ticket) => {
+    setSelectedTicket(data);
+    setOpenFormModal(true);
+  };
+
   const columns: ColumnDef<Ticket>[] = [
     {
       accessorKey: 'id',
@@ -111,11 +118,16 @@ export default function TicketsTable({ tickets }: Props) {
     {
       id: 'actions',
       header: 'Actions',
-      cell: () => {
+      cell: ({ row }) => {
         return (
           <div className="flex gap-4">
             <Button>View</Button>
-            <Button variant="outline">Update</Button>
+            <Button
+              onClick={() => handleUpdateTicket(row.original)}
+              variant="outline"
+            >
+              Update
+            </Button>
             <Button variant="destructive">Delete</Button>
           </div>
         );

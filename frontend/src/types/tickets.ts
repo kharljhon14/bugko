@@ -1,4 +1,4 @@
-import type { CreateTicketSchemaType } from '@/schemas/tickets';
+import type { TicketSchemaType } from '@/schemas/tickets';
 
 export type Status = 'open' | 'in_progress' | 'closed';
 export type Priority = 'low' | 'medium' | 'high';
@@ -18,6 +18,6 @@ export interface Ticket {
   updated_at: string;
 }
 
-export interface CreateTicketRequest extends CreateTicketSchemaType {
+export interface TicketRequest extends TicketSchemaType {
   project_id: number;
 }

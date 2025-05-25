@@ -112,7 +112,6 @@ export function updatedTicketHandler(fastify: FastifyInstance) {
 
       return reply.send({ data: updatedTicket });
     } catch (error) {
-      console.error(error);
       if (error instanceof NotFoundError) {
         return reply.code(404).send({ error: error.message });
       }

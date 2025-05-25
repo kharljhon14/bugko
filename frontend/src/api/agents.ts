@@ -1,10 +1,10 @@
 import type { ProjectSchemaType } from '@/schemas/projects';
-import type { CreateTicketSchemaType } from '@/schemas/tickets';
+import type { TicketSchemaType } from '@/schemas/tickets';
 import type { GoogleUser } from '@/types/auth';
 import type { ProjectMember } from '@/types/project-members';
 import type { Project } from '@/types/projects';
 import type { GenericResponse, GenericResponseArray } from '@/types/response';
-import type { CreateTicketRequest, Ticket } from '@/types/tickets';
+import type { TicketRequest, Ticket } from '@/types/tickets';
 
 import axios, { type AxiosResponse } from 'axios';
 
@@ -45,8 +45,10 @@ const projectMembers = {
 const tickets = {
   getAllTicketByProject: (projectID: string) =>
     requests.get<GenericResponseArray<Ticket>>(`/tickets?project_id=${projectID}`),
-  createTicket: (body: CreateTicketRequest) =>
-    requests.post<GenericResponse<Ticket>, CreateTicketSchemaType>('/tickets', body)
+  createTicket: (body: TicketRequest) =>
+    requests.post<GenericResponse<Ticket>, TicketSchemaType>('/tickets', body),
+  updateTicket: (id: string, body: TicketSchemaType) =>
+    requests.patch<GenericResponse<Ticket>, TicketSchemaType>(`/tickets/${id}`, body)
 };
 
 const agent = {

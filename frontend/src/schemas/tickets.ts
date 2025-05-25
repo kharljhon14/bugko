@@ -1,25 +1,13 @@
 import { z } from 'zod';
 
-export const createTicketSchema = z
+export const ticketSchema = z
   .object({
     assignee_id: z.number().min(1).optional(),
-    title: z.string().min(1).max(255),
-    description: z.string().max(50000).optional(),
+    title: z.string({ message: 'Title is required' }).trim().min(1, 'Title is required').max(255),
+    description: z.string().trim().max(50000).default('').optional(),
     status: z.enum(['open', 'in_progress', 'closed']).optional(),
     priority: z.enum(['low', 'medium', 'high']).optional()
   })
   .strict();
 
-export type CreateTicketSchemaType = z.infer<typeof createTicketSchema>;
-
-export const updateTicketSchema = z
-  .object({
-    assignee_id: z.number().min(1).optional().nullable(),
-    title: z.string().min(1).max(255).optional(),
-    description: z.string().max(50000).optional(),
-    status: z.enum(['open', 'in_progress', 'closed']).optional(),
-    priority: z.enum(['low', 'medium', 'high']).optional()
-  })
-  .strict();
-
-export type UpdateTicketSchemaType = z.infer<typeof updateTicketSchema>;
+export type TicketSchemaType = z.infer<typeof ticketSchema>;

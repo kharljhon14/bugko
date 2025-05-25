@@ -25,7 +25,7 @@ export async function getAllTicketsByProject(client: PoolClient, projectID: numb
         INNER JOIN users u ON t.owner_id = u.id
         LEFT JOIN users a ON t.assignee_id = a.id
         WHERE t.project_id = $1
-        ORDER BY t.updated_at DESC
+        ORDER BY t.created_at DESC
     `,
     [projectID]
   );

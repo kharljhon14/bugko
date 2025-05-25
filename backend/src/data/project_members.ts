@@ -26,8 +26,6 @@ export async function getProjectMembers(client: PoolClient, projectID: number) {
     [projectID]
   );
 
-  console.log(results.rowCount);
-
   return results.rows;
 }
 

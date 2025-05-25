@@ -27,8 +27,8 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { createTicketSchema, type CreateTicketSchemaType } from '@/schemas/tickets';
-import type { CreateTicketRequest } from '@/types/tickets';
+import { ticketSchema, type TicketSchemaType } from '@/schemas/tickets';
+import type { TicketRequest, Ticket } from '@/types/tickets';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -39,13 +39,15 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 
 interface Props {
   projectID: string;
+  selectedTicket?: Ticket;
+  setOpenFormModal: (value: boolean) => void;
 }
 
-export default function TicketForm({ projectID }: Props) {
+export default function TicketForm({ projectID, selectedTicket, setOpenFormModal }: Props) {
   const queryClient = useQueryClient();
 
   const [open, setOpen] = useState(false);
-  const form = useForm({ resolver: zodResolver(createTicketSchema) });
+  const form = useForm({ resolver: zodResolver(ticketSchema) });
 
   const { data, isLoading } = useQuery({
     queryKey: ['project-members'],
@@ -54,15 +56,29 @@ export default function TicketForm({ projectID }: Props) {
 
   const createTicket = useMutation({
     mutationKey: ['tickets'],
-    mutationFn: (data: CreateTicketRequest) => agent.tickets.createTicket(data),
+    mutationFn: (data: TicketRequest) => agent.tickets.createTicket(data),
     onSuccess: () => {
-      alert('Created');
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      setOpenFormModal(false);
     }
   });
 
-  const onSubmit: SubmitHandler<CreateTicketSchemaType> = (data) => {
-    createTicket.mutate({ project_id: Number(projectID), ...data });
+  const updateTicket = useMutation({
+    mutationKey: ['tickets', selectedTicket?.id],
+    mutationFn: ({ id, data }: { id: string; data: TicketSchemaType }) =>
+      agent.tickets.updateTicket(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      setOpenFormModal(false);
+    }
+  });
+
+  const onSubmit: SubmitHandler<TicketSchemaType> = (data) => {
+    if (selectedTicket) {
+      updateTicket.mutate({ id: selectedTicket.id, data: data });
+    } else {
+      createTicket.mutate({ project_id: Number(projectID), ...data });
+    }
   };
 
   return (
@@ -73,6 +89,7 @@ export default function TicketForm({ projectID }: Props) {
       >
         <FormField
           control={form.control}
+          defaultValue={selectedTicket?.title}
           name="title"
           render={({ field }) => (
             <FormItem>
@@ -90,6 +107,7 @@ export default function TicketForm({ projectID }: Props) {
         <FormField
           control={form.control}
           name="description"
+          defaultValue={selectedTicket?.description ?? ''}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="w-fit">Description</FormLabel>
@@ -100,6 +118,7 @@ export default function TicketForm({ projectID }: Props) {
                   placeholder="Enter Description"
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -107,6 +126,9 @@ export default function TicketForm({ projectID }: Props) {
         <FormField
           control={form.control}
           name="assignee_id"
+          defaultValue={
+            selectedTicket?.assignee_id ? Number(selectedTicket?.assignee_id) : undefined
+          }
           render={({ field }) => (
             <FormItem>
               <FormLabel className="w-fit">Assign To</FormLabel>
@@ -132,6 +154,7 @@ export default function TicketForm({ projectID }: Props) {
                       {field.value
                         ? data?.data.find((u) => Number(u.id) === field.value)?.name
                         : 'Select User'}
+
                       <ChevronsUpDown className="opacity-50" />
                     </Button>
                   </FormControl>
@@ -168,6 +191,7 @@ export default function TicketForm({ projectID }: Props) {
                   </Command>
                 </PopoverContent>
               </Popover>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -176,6 +200,7 @@ export default function TicketForm({ projectID }: Props) {
           <FormField
             control={form.control}
             name="status"
+            defaultValue={selectedTicket?.status}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel className="w-fit">Status</FormLabel>
@@ -200,6 +225,7 @@ export default function TicketForm({ projectID }: Props) {
           <FormField
             control={form.control}
             name="priority"
+            defaultValue={selectedTicket?.priority}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel className="w-fit">Priority</FormLabel>
