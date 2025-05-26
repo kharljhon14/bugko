@@ -17,7 +17,7 @@ export default function ProjectMembersCard({
   setOpenFormModal
 }: Props) {
   const { data, isLoading } = useQuery({
-    queryKey: ['members'],
+    queryKey: ['members', project.id],
     queryFn: () => agent.projectMembers.getAllProjectMember(project.id)
   });
 

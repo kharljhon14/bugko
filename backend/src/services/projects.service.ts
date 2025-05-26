@@ -4,6 +4,7 @@ import {
   createProject,
   deleteProject,
   getProjectById,
+  getProjectsById,
   getProjectsByOwner,
   updateProject
 } from '../data/projects.data';
@@ -44,6 +45,24 @@ export async function handleGetProjectsByOwner(client: PoolClient, ownerId: numb
   }
 
   const projects = await getProjectsByOwner(client, ownerId, pageSize, offset);
+  const totalCount = projects.length > 0 ? Number(projects[0].total_count) : 0;
+
+  const projectsWithNoTotalCount = projects.map(({ total_count: _total_count, ...data }) => data);
+  const metadata = calaculateMetadata(totalCount, page, pageSize);
+
+  return { projects: projectsWithNoTotalCount, metadata };
+}
+
+export async function handleGetProjectsByID(client: PoolClient, userId: number, page: number) {
+  const pageSize = 10;
+  const offset = (page - 1) * pageSize;
+  const foundUser = await getUserByID(client, userId);
+
+  if (!foundUser) {
+    throw new NotFoundError(`user with ID: ${userId} not found`);
+  }
+
+  const projects = await getProjectsById(client, userId, pageSize, offset);
   const totalCount = projects.length > 0 ? Number(projects[0].total_count) : 0;
 
   const projectsWithNoTotalCount = projects.map(({ total_count: _total_count, ...data }) => data);

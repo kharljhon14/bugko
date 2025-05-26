@@ -29,6 +29,8 @@ const auth = {
 const projects = {
   getAllProjectByOwner: (ownerID: string, page: number) =>
     requests.get<GenericResponseArray<Project>>(`/projects?owner_id=${ownerID}&page=${page}`),
+  getAllProjectByID: (userID: string, page: number) =>
+    requests.get<GenericResponseArray<Project>>(`/projects/users?user_id=${userID}&page=${page}`),
   getProjectByID: (projectID: string) =>
     requests.get<GenericResponse<Project>>(`/projects/${projectID}`),
   createProject: (body: ProjectSchemaType) => requests.post('/projects', body),

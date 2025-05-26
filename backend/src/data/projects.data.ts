@@ -26,6 +26,33 @@ export async function getProjectById(
   return results.rows[0];
 }
 
+// Get Projects By ID
+export async function getProjectsById(
+  client: PoolClient,
+  userID: number,
+  limit: number,
+  offset: number
+) {
+  const results = await client.query<DBProject & TotalCount>(
+    `
+     SELECT 
+      p.*, 
+      u.id AS owner_id,
+      u.name AS owner_name,
+      COUNT(*) OVER() AS total_count
+    FROM project_members pm
+    INNER JOIN projects p ON p.id = pm.project_id
+    INNER JOIN users u ON p.owner = u.id
+    WHERE pm.user_id = $1
+    ORDER BY p.created_at DESC
+    LIMIT $2 OFFSET $3;
+    `,
+    [userID, limit, offset]
+  );
+
+  return results.rows;
+}
+
 // Get Projects By Owner
 export async function getProjectsByOwner(
   client: PoolClient,

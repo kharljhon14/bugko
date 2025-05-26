@@ -129,7 +129,7 @@ export default function TicketView({ ticketId }: Props) {
       </div>
 
       <Card className="shadow-lg border border-gray-200 rounded-lg overflow-hidden">
-        <CardHeader className="pb-2">
+        <CardHeader className="pb-2 border-b border-gray-200">
           <CardTitle className="text-2xl font-semibold text-gray-900 mb-1">
             {data.data.title}
           </CardTitle>
@@ -171,7 +171,7 @@ export default function TicketView({ ticketId }: Props) {
           </p>
         </CardContent>
 
-        <CardFooter className="pt-4 border-t border-gray-100">
+        <CardFooter className="pt-4 border-t border-gray-200">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-gray-500">
             <p>Created: {new Date(data.data.created_at).toLocaleString()}</p>
             <span className="hidden sm:inline">•</span>

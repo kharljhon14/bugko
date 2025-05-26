@@ -58,7 +58,7 @@ export default function TicketsTable({
       },
       cell: ({ row }) => {
         return (
-          <p className={`truncate ${row.original.status === 'closed' && 'line-through'}`}>
+          <p className={`truncate  ${row.original.status === 'closed' && 'line-through'}`}>
             {row.original.owner_name}
           </p>
         );
@@ -106,31 +106,31 @@ export default function TicketsTable({
         );
       }
     },
-    {
-      accessorKey: 'description',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Description
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        return (
-          <p
-            className={`truncate max-w-[180px] ${
-              row.original.status === 'closed' && 'line-through'
-            }`}
-          >
-            {row.original.description}
-          </p>
-        );
-      }
-    },
+    // {
+    //   accessorKey: 'description',
+    //   header: ({ column }) => {
+    //     return (
+    //       <Button
+    //         variant="ghost"
+    //         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+    //       >
+    //         Description
+    //         <ArrowUpDown className="ml-2 h-4 w-4" />
+    //       </Button>
+    //     );
+    //   },
+    //   cell: ({ row }) => {
+    //     return (
+    //       <p
+    //         className={`truncate max-w-[80px] ${
+    //           row.original.status === 'closed' && 'line-through'
+    //         }`}
+    //       >
+    //         {row.original.description}
+    //       </p>
+    //     );
+    //   }
+    // },
     {
       accessorKey: 'priority',
       header: ({ column }) => {

@@ -37,7 +37,7 @@ export default function ProjectsContainer({ user }: Props) {
 
   const { data, isError, error, isLoading } = useQuery({
     queryKey: ['projects', pagination.pageIndex + 1],
-    queryFn: () => agent.projects.getAllProjectByOwner(user.data.user_id, pagination.pageIndex + 1)
+    queryFn: () => agent.projects.getAllProjectByID(user.data.user_id, pagination.pageIndex + 1)
   });
 
   if (isError || error) {

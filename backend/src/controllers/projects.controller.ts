@@ -4,6 +4,7 @@ import {
   handleCreateNewProject,
   handleDeleteProject,
   handleGetProjectById,
+  handleGetProjectsByID,
   handleGetProjectsByOwner,
   handleUpdateProject
 } from '../services/projects.service';
@@ -78,6 +79,37 @@ export function getProjectsByOwnerHandler(fastify: FastifyInstance) {
       const { projects, metadata } = await handleGetProjectsByOwner(
         client,
         Number(owner_id),
+        page ?? 1
+      );
+
+      return reply.send({ data: projects, _metadata: metadata });
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        return reply.code(404).send({ error: error.message });
+      }
+
+      if (error instanceof DatabaseError) {
+        return reply.code(500).send({ error: error.detail });
+      }
+
+      if (error instanceof Error) {
+        return reply.code(500).send({ error: error });
+      }
+    } finally {
+      client.release();
+    }
+  };
+}
+
+export function getProjectsByIDHandler(fastify: FastifyInstance) {
+  return async function (request: FastifyRequest, reply: FastifyReply) {
+    const client = await fastify.pg.connect();
+    try {
+      const { user_id, page } = request.query as { user_id: number; page: number };
+
+      const { projects, metadata } = await handleGetProjectsByID(
+        client,
+        Number(user_id),
         page ?? 1
       );
 

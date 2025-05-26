@@ -4,6 +4,7 @@ import {
   createProjectHandler,
   deleteProjectHandler,
   getProjectByIdHandler,
+  getProjectsByIDHandler,
   getProjectsByOwnerHandler,
   updateProjectHandler
 } from '../controllers/projects.controller';
@@ -48,6 +49,24 @@ export default function projectsRoutes(fastify: FastifyInstance) {
       }
     },
     getProjectsByOwnerHandler(fastify)
+  );
+
+  fastify.get(
+    '/users',
+    {
+      preHandler: [isAuthenticated],
+      schema: {
+        querystring: {
+          type: 'object',
+          properties: {
+            user_id: { type: 'number' },
+            page: { type: 'number', minimum: 1 }
+          },
+          required: ['user_id']
+        }
+      }
+    },
+    getProjectsByIDHandler(fastify)
   );
 
   fastify.patch(
