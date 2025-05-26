@@ -22,6 +22,7 @@ const requests = {
 
 const auth = {
   me: () => requests.get<GoogleUser>('/me'),
+  getUserByEmail: (email: string) => requests.get<GoogleUser>(`/get-user?email=${email}`),
   logout: () => requests.get('/logout')
 };
 
@@ -39,7 +40,11 @@ const projectMembers = {
   getAllProjectMember: (projectID: string) =>
     requests.get<GenericResponseArray<ProjectMember>>(
       `project-members/members?project_id=${projectID}`
-    )
+    ),
+  addProjectMember: (projectID: number, userID: number) =>
+    requests.post('/project-members', { project_id: projectID, user_id: userID }),
+  removeProjectMember: (projectID: number, userID: number) =>
+    requests.delete(`/project-members?project_id=${projectID}&user_id=${userID}`)
 };
 
 const tickets = {

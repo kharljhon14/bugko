@@ -25,6 +25,8 @@ export function getProjectMemberHandler(fastify: FastifyInstance) {
       }
 
       reply.code(500).send({ error });
+    } finally {
+      client.release();
     }
   };
 }
@@ -44,6 +46,8 @@ export function getProjectMembersHandler(fastify: FastifyInstance) {
       }
 
       reply.code(500).send({ error });
+    } finally {
+      client.release();
     }
   };
 }
@@ -81,6 +85,8 @@ export function addProjectMemberHandler(fastify: FastifyInstance) {
       }
 
       reply.code(500).send({ error });
+    } finally {
+      client.release();
     }
   };
 }
@@ -115,6 +121,8 @@ export function removeProjectMemberHandler(fastify: FastifyInstance) {
       }
 
       reply.code(500).send({ error });
+    } finally {
+      client.release();
     }
   };
 }
