@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/components/ui/sidebar';
-import { FolderKanban, Home, PartyPopper, Users } from 'lucide-react';
+import { FolderKanban, Home, Users } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useMutation } from '@tanstack/react-query';
 import agent from '@/api/agents';
@@ -18,24 +18,19 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 const items = [
   {
-    title: 'Welcome Home',
+    title: 'Home',
     url: '/',
     icon: Home
   },
   {
-    title: 'Cool Projects',
+    title: 'Projects',
     url: '/projects',
     icon: FolderKanban
   },
   {
-    title: 'Awesome Peeps',
+    title: 'Members',
     url: '/members',
     icon: Users
-  },
-  {
-    title: 'Surprise!',
-    url: '/easter-egg',
-    icon: PartyPopper
   }
 ];
 
