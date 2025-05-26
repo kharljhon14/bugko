@@ -6,6 +6,7 @@ export interface GoogleUser {
     verified_email: boolean;
     name: string;
     given_name: string;
+    family_name: string;
     picture: string;
   };
 }
