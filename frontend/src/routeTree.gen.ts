@@ -15,6 +15,7 @@ import { Route as AuthImport } from './routes/auth'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexImport } from './routes/_authenticated.index'
 import { Route as AuthenticatedProjectsImport } from './routes/_authenticated.projects'
+import { Route as AuthenticatedMembersImport } from './routes/_authenticated.members'
 import { Route as AuthenticatedProjectsIndexImport } from './routes/_authenticated.projects.index'
 import { Route as AuthenticatedTicketsTicketIdImport } from './routes/_authenticated.tickets.$ticketId'
 import { Route as AuthenticatedProjectsProjectIdImport } from './routes/_authenticated.projects.$projectId'
@@ -41,6 +42,12 @@ const AuthenticatedIndexRoute = AuthenticatedIndexImport.update({
 const AuthenticatedProjectsRoute = AuthenticatedProjectsImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+
+const AuthenticatedMembersRoute = AuthenticatedMembersImport.update({
+  id: '/members',
+  path: '/members',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 
@@ -83,6 +90,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth'
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
+    }
+    '/_authenticated/members': {
+      id: '/_authenticated/members'
+      path: '/members'
+      fullPath: '/members'
+      preLoaderRoute: typeof AuthenticatedMembersImport
+      parentRoute: typeof AuthenticatedImport
     }
     '/_authenticated/projects': {
       id: '/_authenticated/projects'
@@ -140,12 +154,14 @@ const AuthenticatedProjectsRouteWithChildren =
   )
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedMembersRoute: typeof AuthenticatedMembersRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedTicketsTicketIdRoute: typeof AuthenticatedTicketsTicketIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedMembersRoute: AuthenticatedMembersRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedTicketsTicketIdRoute: AuthenticatedTicketsTicketIdRoute,
@@ -158,6 +174,7 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
+  '/members': typeof AuthenticatedMembersRoute
   '/projects': typeof AuthenticatedProjectsRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
@@ -167,6 +184,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
+  '/members': typeof AuthenticatedMembersRoute
   '/': typeof AuthenticatedIndexRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
   '/tickets/$ticketId': typeof AuthenticatedTicketsTicketIdRoute
@@ -177,6 +195,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/members': typeof AuthenticatedMembersRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
@@ -189,6 +208,7 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/auth'
+    | '/members'
     | '/projects'
     | '/'
     | '/projects/$projectId'
@@ -197,6 +217,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
+    | '/members'
     | '/'
     | '/projects/$projectId'
     | '/tickets/$ticketId'
@@ -205,6 +226,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/members'
     | '/_authenticated/projects'
     | '/_authenticated/'
     | '/_authenticated/projects/$projectId'
@@ -240,6 +262,7 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated.tsx",
       "children": [
+        "/_authenticated/members",
         "/_authenticated/projects",
         "/_authenticated/",
         "/_authenticated/tickets/$ticketId"
@@ -247,6 +270,10 @@ export const routeTree = rootRoute
     },
     "/auth": {
       "filePath": "auth.tsx"
+    },
+    "/_authenticated/members": {
+      "filePath": "_authenticated.members.tsx",
+      "parent": "/_authenticated"
     },
     "/_authenticated/projects": {
       "filePath": "_authenticated.projects.tsx",

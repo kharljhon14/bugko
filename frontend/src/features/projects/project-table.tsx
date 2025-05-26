@@ -5,6 +5,7 @@ import type { Project } from '@/types/projects';
 import type { ColumnDef, OnChangeFn, PaginationState } from '@tanstack/react-table';
 import ProjectDeleteButton from './project-delete-button';
 import { Link } from '@tanstack/react-router';
+import { ArrowUpDown } from 'lucide-react';
 
 interface Props {
   projects: Project[];
@@ -35,15 +36,45 @@ export default function ProjectTable({
     },
     {
       accessorKey: 'name',
-      header: 'Name'
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      }
     },
     {
       accessorKey: 'owner_name',
-      header: 'Project Owner'
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Project Owner
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      }
     },
     {
       accessorKey: 'created_at',
-      header: 'Created',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Created
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       accessorFn: ({ created_at: createdAt }) => {
         const date = new Date(createdAt);
 
@@ -59,7 +90,17 @@ export default function ProjectTable({
 
     {
       accessorKey: 'updated_at',
-      header: 'Updated',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Updated
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       accessorFn: ({ updated_at: updatedAt }) => {
         const date = new Date(updatedAt);
 

@@ -7,6 +7,7 @@ import DataTable from '@/components/common/data-table';
 import TicketDeleteButton from './ticket-delete-button';
 import { Link } from '@tanstack/react-router';
 import { renderPriority, renderStatus } from '@/utils/renderers';
+import { ArrowUpDown } from 'lucide-react';
 
 interface Props {
   tickets: Ticket[];
@@ -44,7 +45,17 @@ export default function TicketsTable({
     },
     {
       accessorKey: 'owner_name',
-      header: 'Ticket Owner',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Ticket Owner
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         return (
           <p className={`truncate ${row.original.status === 'closed' && 'line-through'}`}>
@@ -55,7 +66,17 @@ export default function TicketsTable({
     },
     {
       accessorKey: 'assignee_name',
-      header: 'Assign To',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Assign To
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         return (
           <p className={`truncate ${row.original.status === 'closed' && 'line-through'}`}>
@@ -66,7 +87,17 @@ export default function TicketsTable({
     },
     {
       accessorKey: 'title',
-      header: 'Title',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Title
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         return (
           <p className={`truncate ${row.original.status === 'closed' && 'line-through'}`}>
@@ -77,11 +108,21 @@ export default function TicketsTable({
     },
     {
       accessorKey: 'description',
-      header: 'Description',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Description
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         return (
           <p
-            className={`truncate max-w-[200px] ${
+            className={`truncate max-w-[180px] ${
               row.original.status === 'closed' && 'line-through'
             }`}
           >
@@ -92,21 +133,51 @@ export default function TicketsTable({
     },
     {
       accessorKey: 'priority',
-      header: 'Priority',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Priority
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         return renderPriority(row.original.priority);
       }
     },
     {
       accessorKey: 'status',
-      header: 'Status',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Status
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         return renderStatus(row.original.status);
       }
     },
     {
       accessorKey: 'created_at',
-      header: 'Created',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Created
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       accessorFn: ({ created_at: createdAt }) => {
         const date = new Date(createdAt);
 
@@ -122,7 +193,17 @@ export default function TicketsTable({
 
     {
       accessorKey: 'updated_at',
-      header: 'Updated',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Updated
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       accessorFn: ({ updated_at: updatedAt }) => {
         const date = new Date(updatedAt);
 

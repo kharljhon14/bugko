@@ -12,6 +12,7 @@ import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   type OnChangeFn,
   type PaginationState,
   useReactTable
@@ -40,6 +41,7 @@ export default function DataTable<TData, TValue>({
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     manualPagination: true,
     state: {
       pagination
