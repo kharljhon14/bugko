@@ -4,7 +4,7 @@ import type { GoogleUser } from '@/types/auth';
 import type { ProjectMember } from '@/types/project-members';
 import type { Project } from '@/types/projects';
 import type { GenericResponse, GenericResponseArray } from '@/types/response';
-import type { TicketRequest, Ticket } from '@/types/tickets';
+import type { TicketRequest, Ticket, TicketWithProjectName } from '@/types/tickets';
 
 import axios, { type AxiosResponse } from 'axios';
 
@@ -53,7 +53,7 @@ const tickets = {
   getAllTicketByProject: (projectID: string, page: number) =>
     requests.get<GenericResponseArray<Ticket>>(`/tickets?project_id=${projectID}&page=${page}`),
   getAllTicketByAssignee: (page: number) =>
-    requests.get<GenericResponseArray<Ticket>>(`/tickets/user?page=${page}`),
+    requests.get<GenericResponseArray<TicketWithProjectName>>(`/tickets/user?page=${page}`),
   getTicketByID: (ticketID: string) =>
     requests.get<GenericResponse<Ticket>>(`/tickets/${ticketID}`),
   createTicket: (body: TicketRequest) =>

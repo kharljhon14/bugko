@@ -1,4 +1,4 @@
-import type { Ticket } from '@/types/tickets';
+import type { Ticket, TicketWithProjectName } from '@/types/tickets';
 
 import { useQuery } from '@tanstack/react-query';
 import agent from '@/api/agents';
@@ -7,9 +7,9 @@ import { useState } from 'react';
 
 import type { GenericResponseArray } from '@/types/response';
 import type { PaginationState } from '@tanstack/react-table';
-import TicketsTable from '../tickets/tickets-table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import TicketForm from '../tickets/ticket-form';
+import UserTicketsTable from './user-tickets-table';
 
 export default function UserTicketsContainer() {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | undefined>();
@@ -20,10 +20,12 @@ export default function UserTicketsContainer() {
     pageSize: 10
   });
 
-  const { data, isError, error, isLoading } = useQuery<GenericResponseArray<Ticket>>({
-    queryKey: ['tickets', pagination.pageIndex + 1],
-    queryFn: () => agent.tickets.getAllTicketByAssignee(pagination.pageIndex + 1)
-  });
+  const { data, isError, error, isLoading } = useQuery<GenericResponseArray<TicketWithProjectName>>(
+    {
+      queryKey: ['tickets', pagination.pageIndex + 1],
+      queryFn: () => agent.tickets.getAllTicketByAssignee(pagination.pageIndex + 1)
+    }
+  );
 
   if (isError || error) {
     return (
@@ -69,7 +71,7 @@ export default function UserTicketsContainer() {
         </div>
       </div>
 
-      <TicketsTable
+      <UserTicketsTable
         tickets={data?.data ?? []}
         pagination={pagination}
         setPagination={setPagination}

@@ -18,6 +18,10 @@ export interface Ticket {
   updated_at: string;
 }
 
+export interface TicketWithProjectName extends Ticket {
+  project_name: string;
+}
+
 export interface TicketRequest extends TicketSchemaType {
   project_id: number;
 }

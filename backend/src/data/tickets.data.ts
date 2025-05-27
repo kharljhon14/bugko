@@ -47,12 +47,13 @@ export async function getAllTicketsByAssignee(
   limit: number,
   offset: number
 ) {
-  const results = await client.query<DBTicket & TotalCount>(
+  const results = await client.query<DBTicket & TotalCount & { project_name: string }>(
     `
-        SELECT t.*, u.name AS owner_name, a.name AS assignee_name,
+        SELECT t.*, p.name AS project_name, u.name AS owner_name, a.name AS assignee_name,
         COUNT(*) OVER() AS total_count
         FROM tickets t
         INNER JOIN users u ON t.owner_id = u.id
+        INNER JOIN projects p ON t.project_id = p.id
         LEFT JOIN users a ON t.assignee_id = a.id
         WHERE t.assignee_id = $1
         ORDER BY t.created_at DESC

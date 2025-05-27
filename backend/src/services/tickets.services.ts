@@ -46,6 +46,7 @@ export async function handleGetAllTicketByAssignee(client: PoolClient, id: numbe
   const pageSize = 10;
   const offset = (page - 1) * pageSize;
 
+  console.log(`adasd`, 'here');
   const tickets = await getAllTicketsByAssignee(client, id, pageSize, offset);
   const totalCount = tickets.length > 0 ? Number(tickets[0].total_count) : 0;
 
