@@ -52,6 +52,8 @@ const projectMembers = {
 const tickets = {
   getAllTicketByProject: (projectID: string, page: number) =>
     requests.get<GenericResponseArray<Ticket>>(`/tickets?project_id=${projectID}&page=${page}`),
+  getAllTicketByAssignee: (page: number) =>
+    requests.get<GenericResponseArray<Ticket>>(`/tickets/user?page=${page}`),
   getTicketByID: (ticketID: string) =>
     requests.get<GenericResponse<Ticket>>(`/tickets/${ticketID}`),
   createTicket: (body: TicketRequest) =>

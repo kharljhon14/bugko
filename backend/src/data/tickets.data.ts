@@ -41,6 +41,29 @@ export async function getAllTicketsByProject(
   return results.rows;
 }
 
+export async function getAllTicketsByAssignee(
+  client: PoolClient,
+  userID: number,
+  limit: number,
+  offset: number
+) {
+  const results = await client.query<DBTicket & TotalCount>(
+    `
+        SELECT t.*, u.name AS owner_name, a.name AS assignee_name,
+        COUNT(*) OVER() AS total_count
+        FROM tickets t
+        INNER JOIN users u ON t.owner_id = u.id
+        LEFT JOIN users a ON t.assignee_id = a.id
+        WHERE t.assignee_id = $1
+        ORDER BY t.created_at DESC
+        LIMIT $2 OFFSET $3
+    `,
+    [userID, limit, offset]
+  );
+
+  return results.rows;
+}
+
 export async function createTicket(
   client: PoolClient,
   ownerID: number,

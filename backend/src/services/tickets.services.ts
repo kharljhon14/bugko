@@ -2,6 +2,7 @@ import { PoolClient } from 'pg';
 import {
   createTicket,
   deleteTicket,
+  getAllTicketsByAssignee,
   getAllTicketsByProject,
   getTicketByID,
   updateTicket
@@ -33,6 +34,19 @@ export async function handleGetAllTicketByProject(client: PoolClient, id: number
   }
 
   const tickets = await getAllTicketsByProject(client, id, pageSize, offset);
+  const totalCount = tickets.length > 0 ? Number(tickets[0].total_count) : 0;
+
+  const ticketsWitoutTotalCount = tickets.map(({ total_count: _total_count, ...data }) => data);
+  const metadata = calaculateMetadata(totalCount, page, pageSize);
+
+  return { tickets: ticketsWitoutTotalCount, metadata };
+}
+
+export async function handleGetAllTicketByAssignee(client: PoolClient, id: number, page: number) {
+  const pageSize = 10;
+  const offset = (page - 1) * pageSize;
+
+  const tickets = await getAllTicketsByAssignee(client, id, pageSize, offset);
   const totalCount = tickets.length > 0 ? Number(tickets[0].total_count) : 0;
 
   const ticketsWitoutTotalCount = tickets.map(({ total_count: _total_count, ...data }) => data);

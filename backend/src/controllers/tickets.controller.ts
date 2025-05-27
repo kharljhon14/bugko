@@ -4,6 +4,7 @@ import { NotFoundError, UnauthorizedError } from '../utils/error';
 import {
   handleCreateTicket,
   handleDeleteTicket,
+  handleGetAllTicketByAssignee,
   handleGetAllTicketByProject,
   handleGetTicketByID,
   handleUpdateTicket
@@ -48,6 +49,39 @@ export function getAllTicketsByProjectHandler(fastify: FastifyInstance) {
       const { tickets, metadata } = await handleGetAllTicketByProject(
         client,
         Number(project_id),
+        page ?? 1
+      );
+
+      return reply.send({ data: tickets, _metadata: metadata });
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        return reply.code(404).send({ error: error.message });
+      }
+
+      if (error instanceof DatabaseError) {
+        return reply.code(500).send({ error: error.detail });
+      }
+
+      if (error instanceof Error) {
+        return reply.code(500).send({ error: error.message });
+      }
+    } finally {
+      client.release();
+    }
+  };
+}
+
+export function getAllTicketsByAssigneeHandler(fastify: FastifyInstance) {
+  return async function (request: FastifyRequest, reply: FastifyReply) {
+    const client = await fastify.pg.connect();
+
+    try {
+      const { page } = request.query as { project_id: number; page: number };
+      const user = request.user as UpdatedPassportUser;
+
+      const { tickets, metadata } = await handleGetAllTicketByAssignee(
+        client,
+        Number(user.user_id),
         page ?? 1
       );
 

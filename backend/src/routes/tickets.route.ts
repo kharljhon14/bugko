@@ -3,6 +3,7 @@ import { isAuthenticated } from '../middlewares/auth';
 import {
   createTicketHandler,
   deleteTicketHandler,
+  getAllTicketsByAssigneeHandler,
   getAllTicketsByProjectHandler,
   getTicketByIDHandler,
   updatedTicketHandler
@@ -52,6 +53,22 @@ export default function ticketsRoutes(fastify: FastifyInstance) {
       }
     },
     getAllTicketsByProjectHandler(fastify)
+  );
+
+  fastify.get(
+    '/user',
+    {
+      preHandler: [isAuthenticated],
+      schema: {
+        querystring: {
+          type: 'object',
+          properties: {
+            page: { type: 'number', minimum: 1 }
+          }
+        }
+      }
+    },
+    getAllTicketsByAssigneeHandler(fastify)
   );
 
   fastify.patch(

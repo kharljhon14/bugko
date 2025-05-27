@@ -54,11 +54,13 @@ export default function TicketsContainer({ projectId }: Props) {
   });
 
   if (isError || error) {
-    return <div>Something went wrong!</div>;
+    return (
+      <div className="text-red-600">Oops! Something went wrong while fetching your tickets.</div>
+    );
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading your tickets...</div>;
   }
 
   return (

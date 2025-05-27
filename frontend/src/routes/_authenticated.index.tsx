@@ -1,3 +1,4 @@
+import UserTicketsContainer from '@/features/home/user-tickets-container';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_authenticated/')({
@@ -7,7 +8,7 @@ export const Route = createFileRoute('/_authenticated/')({
 function RouteComponent() {
   return (
     <div>
-      <h1>Home</h1>
+      <UserTicketsContainer />
     </div>
   );
 }

@@ -41,11 +41,15 @@ export default function ProjectsContainer({ user }: Props) {
   });
 
   if (isError || error) {
-    return <div>Something went wrong!</div>;
+    return (
+      <div className="text-red-600">
+        Oops! We couldn't load your projects. Please try again later.
+      </div>
+    );
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Fetching your projects...</div>;
   }
 
   return (
@@ -53,8 +57,11 @@ export default function ProjectsContainer({ user }: Props) {
       <div className="flex flex-col">
         <div className="flex justify-between items-center w-full ml-auto">
           <div>
-            <h1 className="text-3xl font-semibold">Welcome, {user.data.name}!</h1>
-            <p className="text-muted-foreground">Here are your projects.</p>
+            <h1 className="text-2xl font-bold">Hi {user.data.name}, welcome back!</h1>
+            <p className="text-gray-600 text-sm">
+              Below is a list of your projects. You can create a new one or update an existing
+              project anytime.
+            </p>
           </div>
           <Dialog
             open={openFormModal}
