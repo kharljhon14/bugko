@@ -82,6 +82,7 @@ export default function ProjectsContainer({ user }: Props) {
         </div>
         <div className="mt-6">
           <ProjectTable
+            user={user}
             projects={data?.data ?? []}
             pagination={pagination}
             setPagination={setPagination}

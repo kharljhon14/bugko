@@ -6,8 +6,10 @@ import type { ColumnDef, OnChangeFn, PaginationState } from '@tanstack/react-tab
 import ProjectDeleteButton from './project-delete-button';
 import { Link } from '@tanstack/react-router';
 import { ArrowUpDown } from 'lucide-react';
+import type { GoogleUser } from '@/types/auth';
 
 interface Props {
+  user: GoogleUser;
   projects: Project[];
   pagination: PaginationState;
   setPagination: OnChangeFn<PaginationState>;
@@ -17,6 +19,7 @@ interface Props {
 }
 
 export default function ProjectTable({
+  user,
   projects,
   pagination,
   setPagination,
@@ -132,7 +135,9 @@ export default function ProjectTable({
             >
               Update
             </Button>
-            <ProjectDeleteButton project={row.original} />
+            {row.original.owner_id === user.data.user_id && (
+              <ProjectDeleteButton project={row.original} />
+            )}
           </div>
         );
       }
