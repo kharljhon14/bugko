@@ -13,6 +13,8 @@ import { Input } from '@/components/ui/input';
 import { addMemberSchema, type AddMemberSchemaType } from '@/schemas/members';
 import type { GoogleUser } from '@/types/auth';
 import type { ResponseError } from '@/types/errors';
+import type { ProjectMember } from '@/types/project-members';
+import type { GenericResponse } from '@/types/response';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
@@ -33,14 +35,20 @@ export default function AddMemberForm({ projectID, setOpenForm }: Props) {
   const [error, setError] = useState<string | undefined>('');
   const form = useForm<AddMemberSchemaType>({ resolver: zodResolver(addMemberSchema) });
 
-  const addUser = useMutation({
+  const addUser = useMutation<
+    GenericResponse<ProjectMember>,
+    AxiosError<ResponseError>,
+    { projectID: number; userID: number }
+  >({
     mutationKey: ['members'],
-    mutationFn: ({ projectID, userID }: { projectID: number; userID: number }) =>
-      agent.projectMembers.addProjectMember(projectID, userID),
+    mutationFn: ({ projectID, userID }) => agent.projectMembers.addProjectMember(projectID, userID),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members', projectID] });
       toast.success('User has been added');
       setOpenForm(false);
+    },
+    onError: (error) => {
+      setError(error.response?.data.error);
     }
   });
 

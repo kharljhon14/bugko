@@ -9,7 +9,7 @@ import {
   handleUpdateProject
 } from '../services/projects.service';
 import { DatabaseError } from 'pg';
-import { NotFoundError } from '../utils/error';
+import { NotFoundError, UnprocessableEntityError } from '../utils/error';
 import { UpdatedPassportUser } from '../types/auth';
 
 export function createProjectHandler(fastify: FastifyInstance) {

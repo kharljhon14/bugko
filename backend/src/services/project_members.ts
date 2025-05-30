@@ -5,7 +5,7 @@ import {
   getProjectMembers,
   removeProjectMember
 } from '../data/project_members';
-import { NotFoundError, UnauthorizedError } from '../utils/error';
+import { NotFoundError, UnauthorizedError, UnprocessableEntityError } from '../utils/error';
 import { getProjectById } from '../data/projects.data';
 import { getUserByID } from '../data/auth.data';
 
@@ -45,6 +45,10 @@ export async function handleAddProjectMember(
 
   if (!project) {
     throw new NotFoundError(`project with id ${projectID} not found`);
+  }
+
+  if (Number(project.owner) === userID) {
+    throw new UnprocessableEntityError('user already added');
   }
 
   if (Number(project.owner) !== ownerID) {

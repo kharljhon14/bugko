@@ -44,7 +44,13 @@ const projectMembers = {
       `project-members/members?project_id=${projectID}`
     ),
   addProjectMember: (projectID: number, userID: number) =>
-    requests.post('/project-members', { project_id: projectID, user_id: userID }),
+    requests.post<GenericResponse<ProjectMember>, { project_id: number; user_id: number }>(
+      '/project-members',
+      {
+        project_id: projectID,
+        user_id: userID
+      }
+    ),
   removeProjectMember: (projectID: number, userID: number) =>
     requests.delete(`/project-members?project_id=${projectID}&user_id=${userID}`)
 };

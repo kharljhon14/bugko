@@ -5,6 +5,13 @@ export class NotFoundError extends Error {
   }
 }
 
+export class UnprocessableEntityError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'UnprocessableEntityError';
+  }
+}
+
 export class UnprocessableEntiryError extends Error {
   constructor(message: string) {
     super(message);

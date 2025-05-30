@@ -5,7 +5,7 @@ import {
   handleGetProjectMembers,
   handleRemoveProjectMember
 } from '../services/project_members';
-import { NotFoundError, UnauthorizedError } from '../utils/error';
+import { NotFoundError, UnauthorizedError, UnprocessableEntityError } from '../utils/error';
 import { AddProjectMemberSchemaType } from '../schemas/project_member.schema';
 import { UpdatedPassportUser } from '../types/auth';
 import { DatabaseError } from 'pg';
@@ -72,6 +72,10 @@ export function addProjectMemberHandler(fastify: FastifyInstance) {
         return reply.code(404).send({ error: error.message });
       }
 
+      if (error instanceof UnprocessableEntityError) {
+        return reply.code(422).send({ error: error.message });
+      }
+
       if (error instanceof UnauthorizedError) {
         return reply.code(401).send({ error: error.message });
       }
@@ -79,7 +83,7 @@ export function addProjectMemberHandler(fastify: FastifyInstance) {
       if (error instanceof DatabaseError) {
         switch (error.constraint) {
           case 'project_and_user_unique':
-            return reply.code(422).send({ error: error.detail });
+            return reply.code(422).send({ error: 'user already added' });
         }
         return reply.code(500).send({ error: error.detail });
       }
