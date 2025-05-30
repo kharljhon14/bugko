@@ -17,6 +17,9 @@ import { projectSchema, type ProjectSchemaType } from '@/schemas/projects';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import agent from '@/api/agents';
 
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
+
 interface Props {
   selectedProject: Project | undefined;
   setOpenFormModal: (value: boolean) => void;
@@ -35,6 +38,7 @@ export default function ProjectForm({ selectedProject, setOpenFormModal }: Props
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       setOpenFormModal(false);
+      toast.success('Project has been created', { richColors: true });
     }
   });
 
@@ -45,6 +49,7 @@ export default function ProjectForm({ selectedProject, setOpenFormModal }: Props
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       setOpenFormModal(false);
+      toast.success('Project has been updated', { richColors: true });
     }
   });
 
@@ -77,9 +82,13 @@ export default function ProjectForm({ selectedProject, setOpenFormModal }: Props
           )}
         />
         <Button
+          disabled={createProject.isPending || updateProject.isPending}
           type="submit"
           className="w-full mt-4"
         >
+          {createProject.isPending || updateProject.isPending ? (
+            <Loader2 className="animate-spin" />
+          ) : null}
           {selectedProject ? 'Update' : 'Create'}
         </Button>
       </form>

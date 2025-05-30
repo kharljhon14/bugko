@@ -32,10 +32,11 @@ import type { TicketRequest, Ticket } from '@/types/tickets';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
 import { useForm, type SubmitHandler } from 'react-hook-form';
+import { toast } from 'sonner';
 
 interface Props {
   projectID: string;
@@ -60,6 +61,7 @@ export default function TicketForm({ projectID, selectedTicket, setOpenFormModal
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
       setOpenFormModal(false);
+      toast.success('Ticket has been created', { richColors: true });
     }
   });
 
@@ -70,6 +72,7 @@ export default function TicketForm({ projectID, selectedTicket, setOpenFormModal
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
       setOpenFormModal(false);
+      toast.success('Ticket has been updated', { richColors: true });
     }
   });
 
@@ -250,9 +253,13 @@ export default function TicketForm({ projectID, selectedTicket, setOpenFormModal
         </div>
 
         <Button
+          disabled={createTicket.isPending || updateTicket.isPending}
           type="submit"
           className="w-full mt-4"
         >
+          {createTicket.isPending || updateTicket.isPending ? (
+            <Loader2 className="animate-spin" />
+          ) : null}
           Submit
         </Button>
       </form>

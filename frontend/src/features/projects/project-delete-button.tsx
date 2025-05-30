@@ -12,6 +12,9 @@ import type { Project } from '@/types/projects';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import agent from '@/api/agents';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
 interface Props {
   project: Project;
@@ -32,6 +35,12 @@ export default function ProjectDeleteButton({ project }: Props) {
     deleteProject.mutate({ id: project.id });
   };
 
+  useEffect(() => {
+    if (deleteProject.isSuccess) {
+      toast.error('Project has been deleted', { richColors: true });
+    }
+  }, [deleteProject.isSuccess]);
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -45,6 +54,7 @@ export default function ProjectDeleteButton({ project }: Props) {
         <div className="flex justify-between mt-6">
           <DialogClose asChild>
             <Button
+              disabled={deleteProject.isPending}
               type="button"
               variant="secondary"
             >
@@ -52,10 +62,12 @@ export default function ProjectDeleteButton({ project }: Props) {
             </Button>
           </DialogClose>
           <Button
+            disabled={deleteProject.isPending}
             onClick={handleDeleteProject}
             type="button"
             variant="destructive"
           >
+            {deleteProject.isPending && <Loader2 className="animate-spin" />}
             Delete Project
           </Button>
         </div>

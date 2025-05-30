@@ -61,7 +61,10 @@ export default function MembersContainer({ user }: Props) {
           <DialogHeader>
             <DialogTitle>Add Member to {selectedProject?.name}</DialogTitle>
           </DialogHeader>
-          <AddMemberForm projectID={selectedProject?.id ?? ''} />
+          <AddMemberForm
+            projectID={selectedProject?.id ?? ''}
+            setOpenForm={setOpenFormModal}
+          />
         </DialogContent>
       </Dialog>
 

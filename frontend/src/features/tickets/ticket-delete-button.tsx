@@ -13,6 +13,7 @@ import type { Ticket } from '@/types/tickets';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
+import { Loader2 } from 'lucide-react';
 
 interface Props {
   ticket: Ticket;
@@ -50,6 +51,7 @@ export default function TicketDeleteButton({ ticket, redirect = false }: Props) 
         <div className="flex justify-between mt-6">
           <DialogClose asChild>
             <Button
+              disabled={deleteTicket.isPending}
               type="button"
               variant="secondary"
             >
@@ -57,10 +59,12 @@ export default function TicketDeleteButton({ ticket, redirect = false }: Props) 
             </Button>
           </DialogClose>
           <Button
+            disabled={deleteTicket.isPending}
             onClick={handleDeleteProject}
             type="button"
             variant="destructive"
           >
+            {deleteTicket.isPending && <Loader2 className="animate-spin" />}
             Delete Ticket
           </Button>
         </div>
