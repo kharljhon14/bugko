@@ -58,5 +58,16 @@ export async function removeProjectMember(client: PoolClient, projectID: number,
     [projectID, userID]
   );
 
+  if (results.rowCount && results.rowCount > 0) {
+    await client.query(
+      `
+        UPDATE tickets 
+        SET assignee_id = NULL
+        WHERE project_id = $1 AND assignee_id = $2;
+        `,
+      [projectID, userID]
+    );
+  }
+
   return results.rowCount;
 }

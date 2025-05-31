@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Project } from '@/types/projects';
 import { useQuery } from '@tanstack/react-query';
-import { Minus, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import RemoveMemberButton from './remove-member-button';
 
 interface Props {
   project: Project;
@@ -55,13 +56,10 @@ export default function ProjectMembersCard({
                 <p className="text-sm text-gray-500">{user.email}</p>
               </div>
               {user.id !== project.owner_id && (
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="text-red-500 hover:bg-red-100"
-                >
-                  <Minus className="w-4 h-4" />
-                </Button>
+                <RemoveMemberButton
+                  selectedUser={user}
+                  projectID={project.id}
+                />
               )}
             </div>
           ))

@@ -44,7 +44,7 @@ export default function AddMemberForm({ projectID, setOpenForm }: Props) {
     mutationFn: ({ projectID, userID }) => agent.projectMembers.addProjectMember(projectID, userID),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members', projectID] });
-      toast.success('User has been added');
+      toast.success('User has been added', { richColors: true });
       setOpenForm(false);
     },
     onError: (error) => {
