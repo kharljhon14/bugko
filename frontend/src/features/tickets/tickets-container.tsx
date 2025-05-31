@@ -65,7 +65,7 @@ export default function TicketsContainer({ projectId }: Props) {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-col md:flex-row gap-4 md:items-center justify-between">
         <div className="flex space-x-4">
           <Button
             variant="outline"
@@ -95,29 +95,27 @@ export default function TicketsContainer({ projectId }: Props) {
           </div>
         </div>
 
-        <div>
-          <Dialog
-            open={openFormModal}
-            onOpenChange={setOpenFormModal}
+        <Dialog
+          open={openFormModal}
+          onOpenChange={setOpenFormModal}
+        >
+          <DialogTrigger
+            onClick={handleOpenDialog}
+            className={buttonVariants({ variant: 'default', size: 'lg' })}
           >
-            <DialogTrigger
-              onClick={handleOpenDialog}
-              className={buttonVariants({ variant: 'default' })}
-            >
-              Create Ticket
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{selectedTicket ? 'Update Ticket' : 'Create Ticket'}</DialogTitle>
-              </DialogHeader>
-              <TicketForm
-                projectID={projectId}
-                selectedTicket={selectedTicket}
-                setOpenFormModal={setOpenFormModal}
-              />
-            </DialogContent>
-          </Dialog>
-        </div>
+            Create Ticket
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{selectedTicket ? 'Update Ticket' : 'Create Ticket'}</DialogTitle>
+            </DialogHeader>
+            <TicketForm
+              projectID={projectId}
+              selectedTicket={selectedTicket}
+              setOpenFormModal={setOpenFormModal}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
 
       <TicketsTable

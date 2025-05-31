@@ -4,7 +4,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem
@@ -54,10 +53,6 @@ export function AppSidebar() {
     >
       <SidebarContent className="flex-1 flex flex-col">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xl font-bold px-4 py-3 text-slate-700">
-            BugKo
-          </SidebarGroupLabel>
-
           {/* User Info Section */}
           <div className="flex items-center gap-3 px-4 py-2 border-b">
             <Avatar>

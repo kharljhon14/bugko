@@ -62,7 +62,7 @@ export default function TicketView({ ticketId }: Props) {
 
   return (
     <div className="">
-      <div className="mb-6 flex items-start justify-between">
+      <div className="mb-6 flex flex-col md:flex-row gap-4 md:items-start md:justify-between">
         <div className="flex space-x-4">
           <Button
             variant="outline"
@@ -99,7 +99,7 @@ export default function TicketView({ ticketId }: Props) {
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row gap-2 justify-center">
           <Dialog
             open={openFormModal}
             onOpenChange={setOpenFormModal}

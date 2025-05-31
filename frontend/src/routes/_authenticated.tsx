@@ -19,19 +19,29 @@ export const Route = createFileRoute('/_authenticated')({
     return await agent.auth.me();
   },
   component: () => (
-    <>
-      <div className="p-8 flex flex-col">
-        <SidebarProvider>
-          <AppSidebar />
-          <main className="w-full">
+    <SidebarProvider>
+      <AppSidebar />
+      <div className=" min-h-screen w-screen bg-slate-50">
+        {/* Main Content */}
+        <div className=" flex-col">
+          {/* Header */}
+          <header className=" flex items-center justify-between px-6 py-4 bg-white border-b shadow-sm">
             <SidebarTrigger />
+            <h1 className="text-xl font-bold text-slate-800 tracking-tight">
+              BugKo Ticketing System
+            </h1>
+          </header>
+
+          {/* Page Content */}
+          <main className=" p-6 overflow-auto">
             <AppProviders>
               <Outlet />
             </AppProviders>
           </main>
-        </SidebarProvider>
+        </div>
       </div>
+
       {/* <TanStackRouterDevtools /> */}
-    </>
+    </SidebarProvider>
   )
 });

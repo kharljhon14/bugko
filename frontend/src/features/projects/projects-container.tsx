@@ -55,7 +55,7 @@ export default function ProjectsContainer({ user }: Props) {
   return (
     <>
       <div className="flex flex-col">
-        <div className="flex justify-between items-center w-full ml-auto">
+        <div className="flex flex-col justify-between md:flex-row md:items-center w-full gap-6">
           <div>
             <h1 className="text-2xl font-bold">Hi {user.data.name}, welcome back!</h1>
             <p className="text-gray-600 text-sm">
