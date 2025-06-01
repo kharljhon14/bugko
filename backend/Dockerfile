@@ -1,24 +1,22 @@
-FROM node:20
+FROM node:20-slim
 
-# Install build tools required for native modules
 RUN apt-get update && apt-get install -y \
     python3 \
     make \
     g++ \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY pnpm-lock.yaml package.json ./
-
-# Install dependencies
+COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install
 
-# Copy application files
 COPY . .
 
-# Expose the port and run the app
+RUN pnpm build
+
 EXPOSE 8080
-CMD ["pnpm", "dev"]
+
+# Use custom startup script
+CMD ["sh", "./entrypoint.sh"]

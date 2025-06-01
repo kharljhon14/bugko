@@ -55,7 +55,7 @@ export async function getAllTicketsByAssignee(
         INNER JOIN users u ON t.owner_id = u.id
         INNER JOIN projects p ON t.project_id = p.id
         LEFT JOIN users a ON t.assignee_id = a.id
-        WHERE t.assignee_id = $1
+        WHERE t.assignee_id = $1 AND t.status != 'closed'
         ORDER BY t.created_at DESC
         LIMIT $2 OFFSET $3
     `,

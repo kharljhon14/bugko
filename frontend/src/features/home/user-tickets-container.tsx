@@ -43,7 +43,9 @@ export default function UserTicketsContainer() {
         <div className="flex space-x-4">
           <div className="flex flex-col space-y-2">
             <h1 className="text-2xl font-bold text-gray-800">My Tickets</h1>
-            <p className="text-gray-600 text-sm">View and manage all tickets assigned to you.</p>
+            <p className="text-gray-600 text-sm">
+              View and manage all active tickets assigned to you.
+            </p>
           </div>
           <div>
             <Dialog

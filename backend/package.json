@@ -10,8 +10,8 @@
     "lint": "eslint --ext .ts",
     "typescheck": "tsc --noEmit",
     "migrate": "node-pg-migrate",
-    "migrate-down": "$DATABASE_URL node-pg-migrate down",
-    "migrate-up": "$DATABASE_URL node-pg-migrate up"
+    "migrate-down": "node-pg-migrate down",
+    "migrate-up": "node-pg-migrate up"
   },
   "keywords": [],
   "author": "Kharl Enriquez",
